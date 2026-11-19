@@ -247,6 +247,33 @@
                 <span v-else class="text-gray-400 dark:text-gray-500">{{
                   t("admin.groups.subscription.noLimit")
                 }}</span>
+                <div
+                  v-if="
+                    row.untagged_daily_limit_usd != null ||
+                    row.framework_tag_secret
+                  "
+                  class="flex flex-wrap items-center gap-x-1 gap-y-0.5"
+                >
+                  <span
+                    v-if="row.untagged_daily_limit_usd != null"
+                    class="whitespace-nowrap"
+                  >
+                    {{ t("admin.groups.untaggedLimitShort") }}
+                    <template v-if="row.untagged_daily_limit_usd > 0"
+                      >{{ formatUsd(row.untagged_daily_limit_usd) }}/{{
+                        t("admin.groups.limitDay")
+                      }}</template
+                    >
+                    <template v-else>{{
+                      t("admin.groups.untaggedTagRequired")
+                    }}</template>
+                  </span>
+                  <span
+                    v-if="!row.framework_tag_secret"
+                    class="whitespace-nowrap text-amber-600 dark:text-amber-400"
+                    >· {{ t("admin.groups.frameworkSecretMissing") }}</span
+                  >
+                </div>
                 <div class="text-gray-400 dark:text-gray-500">
                   {{ t("admin.groups.usageTotal") }}
                   <span class="ml-1 font-medium text-gray-600 dark:text-gray-300"
@@ -764,6 +791,44 @@
                 class="input"
                 :placeholder="t('admin.groups.subscription.noLimit')"
               />
+            </div>
+            <div>
+              <label class="input-label">{{
+                t("admin.groups.subscription.frameworkTagSecret")
+              }}</label>
+              <div class="flex gap-2">
+                <input
+                  v-model.trim="createForm.framework_tag_secret"
+                  type="text"
+                  autocomplete="off"
+                  class="input font-mono"
+                  :placeholder="t('admin.groups.subscription.frameworkTagSecretPlaceholder')"
+                />
+                <button
+                  type="button"
+                  class="btn btn-secondary shrink-0"
+                  @click="generateFrameworkSecret(createForm)"
+                >
+                  {{ t("admin.groups.subscription.frameworkTagSecretGenerate") }}
+                </button>
+              </div>
+              <p class="input-hint mb-3">
+                {{ t("admin.groups.subscription.frameworkTagSecretHint") }}
+              </p>
+              <label class="input-label">{{
+                t("admin.groups.subscription.untaggedDailyLimit")
+              }}</label>
+              <input
+                v-model.number="createForm.untagged_daily_limit_usd"
+                type="number"
+                step="0.01"
+                min="0"
+                class="input"
+                :placeholder="t('admin.groups.subscription.noLimit')"
+              />
+              <p class="input-hint">
+                {{ t("admin.groups.subscription.untaggedDailyLimitHint") }}
+              </p>
             </div>
           </div>
         </div>
@@ -2431,6 +2496,44 @@
                 class="input"
                 :placeholder="t('admin.groups.subscription.noLimit')"
               />
+            </div>
+            <div>
+              <label class="input-label">{{
+                t("admin.groups.subscription.frameworkTagSecret")
+              }}</label>
+              <div class="flex gap-2">
+                <input
+                  v-model.trim="editForm.framework_tag_secret"
+                  type="text"
+                  autocomplete="off"
+                  class="input font-mono"
+                  :placeholder="t('admin.groups.subscription.frameworkTagSecretPlaceholder')"
+                />
+                <button
+                  type="button"
+                  class="btn btn-secondary shrink-0"
+                  @click="generateFrameworkSecret(editForm)"
+                >
+                  {{ t("admin.groups.subscription.frameworkTagSecretGenerate") }}
+                </button>
+              </div>
+              <p class="input-hint mb-3">
+                {{ t("admin.groups.subscription.frameworkTagSecretHint") }}
+              </p>
+              <label class="input-label">{{
+                t("admin.groups.subscription.untaggedDailyLimit")
+              }}</label>
+              <input
+                v-model.number="editForm.untagged_daily_limit_usd"
+                type="number"
+                step="0.01"
+                min="0"
+                class="input"
+                :placeholder="t('admin.groups.subscription.noLimit')"
+              />
+              <p class="input-hint">
+                {{ t("admin.groups.subscription.untaggedDailyLimitHint") }}
+              </p>
             </div>
           </div>
         </div>
@@ -4315,6 +4418,8 @@
       @close="showRPMOverridesModal = false"
       @success="loadGroups"
     />
+
+    <!-- Framework Devices Modal -->
   </AppLayout>
 </template>
 
@@ -5009,6 +5114,8 @@ const createForm = reactive({
   daily_limit_usd: null as number | null,
   weekly_limit_usd: null as number | null,
   monthly_limit_usd: null as number | null,
+  untagged_daily_limit_usd: null as number | null,
+  framework_tag_secret: "",
   long_context_pricing_enabled: true,
   force_openai_fast: false,
   force_openai_ultrafast: false,
@@ -5377,6 +5484,8 @@ const editForm = reactive({
   daily_limit_usd: null as number | null,
   weekly_limit_usd: null as number | null,
   monthly_limit_usd: null as number | null,
+  untagged_daily_limit_usd: null as number | null,
+  framework_tag_secret: "",
   long_context_pricing_enabled: true,
   force_openai_fast: false,
   force_openai_ultrafast: false,
@@ -5854,6 +5963,8 @@ const closeCreateModal = () => {
   createForm.daily_limit_usd = null;
   createForm.weekly_limit_usd = null;
   createForm.monthly_limit_usd = null;
+  createForm.untagged_daily_limit_usd = null;
+  createForm.framework_tag_secret = "";
   createForm.allow_image_generation = false;
   createForm.allow_batch_image_generation = false;
   createForm.image_count_billing = false;
@@ -6020,6 +6131,10 @@ const handleCreateGroup = async () => {
       monthly_limit_usd: normalizeOptionalLimit(
         createForm.monthly_limit_usd as number | string | null,
       ),
+      untagged_daily_limit_usd: normalizeOptionalLimit(
+        createForm.untagged_daily_limit_usd as number | string | null,
+      ),
+      framework_tag_secret: (createForm.framework_tag_secret || "").trim(),
       ...(Object.keys(videoModelPrices).length > 0
         ? { video_model_prices: videoModelPrices }
         : {}),
@@ -6062,6 +6177,9 @@ const handleCreateGroup = async () => {
     requestData.daily_limit_usd = emptyToNull(requestData.daily_limit_usd);
     requestData.weekly_limit_usd = emptyToNull(requestData.weekly_limit_usd);
     requestData.monthly_limit_usd = emptyToNull(requestData.monthly_limit_usd);
+    requestData.untagged_daily_limit_usd = emptyToNull(
+      requestData.untagged_daily_limit_usd,
+    );
     requestData.image_rate_multiplier = normalizeRateMultiplier(
       requestData.image_rate_multiplier,
     );
@@ -6149,6 +6267,8 @@ const handleEdit = async (group: AdminGroup) => {
   editForm.daily_limit_usd = group.daily_limit_usd;
   editForm.weekly_limit_usd = group.weekly_limit_usd;
   editForm.monthly_limit_usd = group.monthly_limit_usd;
+  editForm.untagged_daily_limit_usd = group.untagged_daily_limit_usd ?? null;
+  editForm.framework_tag_secret = group.framework_tag_secret ?? "";
   editForm.long_context_pricing_enabled =
     group.long_context_pricing_enabled ?? true;
   editForm.force_openai_fast = group.force_openai_fast ?? false;
@@ -6370,6 +6490,10 @@ const handleUpdateGroup = async () => {
       monthly_limit_usd: normalizeOptionalLimit(
         editForm.monthly_limit_usd as number | string | null,
       ),
+      untagged_daily_limit_usd: normalizeOptionalLimit(
+        editForm.untagged_daily_limit_usd as number | string | null,
+      ),
+      framework_tag_secret: (editForm.framework_tag_secret || "").trim(),
       video_model_prices: serializeVideoModelPrices(
         editForm.video_model_prices,
       ),
@@ -6425,6 +6549,9 @@ const handleUpdateGroup = async () => {
     payload.daily_limit_usd = emptyToNull(payload.daily_limit_usd);
     payload.weekly_limit_usd = emptyToNull(payload.weekly_limit_usd);
     payload.monthly_limit_usd = emptyToNull(payload.monthly_limit_usd);
+    payload.untagged_daily_limit_usd = emptyToNull(
+      payload.untagged_daily_limit_usd,
+    );
     payload.image_rate_multiplier = normalizeRateMultiplier(
       payload.image_rate_multiplier,
     );
@@ -6522,6 +6649,13 @@ const handleRateMultipliers = (group: AdminGroup) => {
 const handleRPMOverrides = (group: AdminGroup) => {
   rpmOverridesGroup.value = group;
   showRPMOverridesModal.value = true;
+};
+
+// 生成 32 字节随机框架令牌签名密钥（hex）。
+const generateFrameworkSecret = (form: { framework_tag_secret: string }) => {
+  const bytes = new Uint8Array(32);
+  crypto.getRandomValues(bytes);
+  form.framework_tag_secret = Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
 };
 
 const handleDuplicate = async (group: AdminGroup) => {

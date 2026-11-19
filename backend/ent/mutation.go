@@ -22105,6 +22105,9 @@ type GroupMutation struct {
 	addweekly_limit_usd                     *float64
 	monthly_limit_usd                       *float64
 	addmonthly_limit_usd                    *float64
+	framework_tag_secret                    *string
+	untagged_daily_limit_usd                *float64
+	adduntagged_daily_limit_usd             *float64
 	default_validity_days                   *int
 	adddefault_validity_days                *int
 	allow_image_generation                  *bool
@@ -23165,6 +23168,112 @@ func (m *GroupMutation) ResetMonthlyLimitUsd() {
 	m.monthly_limit_usd = nil
 	m.addmonthly_limit_usd = nil
 	delete(m.clearedFields, group.FieldMonthlyLimitUsd)
+}
+
+// SetFrameworkTagSecret sets the "framework_tag_secret" field.
+func (m *GroupMutation) SetFrameworkTagSecret(s string) {
+	m.framework_tag_secret = &s
+}
+
+// FrameworkTagSecret returns the value of the "framework_tag_secret" field in the mutation.
+func (m *GroupMutation) FrameworkTagSecret() (r string, exists bool) {
+	v := m.framework_tag_secret
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldFrameworkTagSecret returns the old "framework_tag_secret" field's value of the Group entity.
+// If the Group object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *GroupMutation) OldFrameworkTagSecret(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldFrameworkTagSecret is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldFrameworkTagSecret requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldFrameworkTagSecret: %w", err)
+	}
+	return oldValue.FrameworkTagSecret, nil
+}
+
+// ResetFrameworkTagSecret resets all changes to the "framework_tag_secret" field.
+func (m *GroupMutation) ResetFrameworkTagSecret() {
+	m.framework_tag_secret = nil
+}
+
+// SetUntaggedDailyLimitUsd sets the "untagged_daily_limit_usd" field.
+func (m *GroupMutation) SetUntaggedDailyLimitUsd(f float64) {
+	m.untagged_daily_limit_usd = &f
+	m.adduntagged_daily_limit_usd = nil
+}
+
+// UntaggedDailyLimitUsd returns the value of the "untagged_daily_limit_usd" field in the mutation.
+func (m *GroupMutation) UntaggedDailyLimitUsd() (r float64, exists bool) {
+	v := m.untagged_daily_limit_usd
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUntaggedDailyLimitUsd returns the old "untagged_daily_limit_usd" field's value of the Group entity.
+// If the Group object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *GroupMutation) OldUntaggedDailyLimitUsd(ctx context.Context) (v *float64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUntaggedDailyLimitUsd is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUntaggedDailyLimitUsd requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUntaggedDailyLimitUsd: %w", err)
+	}
+	return oldValue.UntaggedDailyLimitUsd, nil
+}
+
+// AddUntaggedDailyLimitUsd adds f to the "untagged_daily_limit_usd" field.
+func (m *GroupMutation) AddUntaggedDailyLimitUsd(f float64) {
+	if m.adduntagged_daily_limit_usd != nil {
+		*m.adduntagged_daily_limit_usd += f
+	} else {
+		m.adduntagged_daily_limit_usd = &f
+	}
+}
+
+// AddedUntaggedDailyLimitUsd returns the value that was added to the "untagged_daily_limit_usd" field in this mutation.
+func (m *GroupMutation) AddedUntaggedDailyLimitUsd() (r float64, exists bool) {
+	v := m.adduntagged_daily_limit_usd
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearUntaggedDailyLimitUsd clears the value of the "untagged_daily_limit_usd" field.
+func (m *GroupMutation) ClearUntaggedDailyLimitUsd() {
+	m.untagged_daily_limit_usd = nil
+	m.adduntagged_daily_limit_usd = nil
+	m.clearedFields[group.FieldUntaggedDailyLimitUsd] = struct{}{}
+}
+
+// UntaggedDailyLimitUsdCleared returns if the "untagged_daily_limit_usd" field was cleared in this mutation.
+func (m *GroupMutation) UntaggedDailyLimitUsdCleared() bool {
+	_, ok := m.clearedFields[group.FieldUntaggedDailyLimitUsd]
+	return ok
+}
+
+// ResetUntaggedDailyLimitUsd resets all changes to the "untagged_daily_limit_usd" field.
+func (m *GroupMutation) ResetUntaggedDailyLimitUsd() {
+	m.untagged_daily_limit_usd = nil
+	m.adduntagged_daily_limit_usd = nil
+	delete(m.clearedFields, group.FieldUntaggedDailyLimitUsd)
 }
 
 // SetDefaultValidityDays sets the "default_validity_days" field.
@@ -26032,7 +26141,7 @@ func (m *GroupMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *GroupMutation) Fields() []string {
-	fields := make([]string, 0, 69)
+	fields := make([]string, 0, 71)
 	if m.created_at != nil {
 		fields = append(fields, group.FieldCreatedAt)
 	}
@@ -26089,6 +26198,12 @@ func (m *GroupMutation) Fields() []string {
 	}
 	if m.monthly_limit_usd != nil {
 		fields = append(fields, group.FieldMonthlyLimitUsd)
+	}
+	if m.framework_tag_secret != nil {
+		fields = append(fields, group.FieldFrameworkTagSecret)
+	}
+	if m.untagged_daily_limit_usd != nil {
+		fields = append(fields, group.FieldUntaggedDailyLimitUsd)
 	}
 	if m.default_validity_days != nil {
 		fields = append(fields, group.FieldDefaultValidityDays)
@@ -26286,6 +26401,10 @@ func (m *GroupMutation) Field(name string) (ent.Value, bool) {
 		return m.WeeklyLimitUsd()
 	case group.FieldMonthlyLimitUsd:
 		return m.MonthlyLimitUsd()
+	case group.FieldFrameworkTagSecret:
+		return m.FrameworkTagSecret()
+	case group.FieldUntaggedDailyLimitUsd:
+		return m.UntaggedDailyLimitUsd()
 	case group.FieldDefaultValidityDays:
 		return m.DefaultValidityDays()
 	case group.FieldAllowImageGeneration:
@@ -26433,6 +26552,10 @@ func (m *GroupMutation) OldField(ctx context.Context, name string) (ent.Value, e
 		return m.OldWeeklyLimitUsd(ctx)
 	case group.FieldMonthlyLimitUsd:
 		return m.OldMonthlyLimitUsd(ctx)
+	case group.FieldFrameworkTagSecret:
+		return m.OldFrameworkTagSecret(ctx)
+	case group.FieldUntaggedDailyLimitUsd:
+		return m.OldUntaggedDailyLimitUsd(ctx)
 	case group.FieldDefaultValidityDays:
 		return m.OldDefaultValidityDays(ctx)
 	case group.FieldAllowImageGeneration:
@@ -26674,6 +26797,20 @@ func (m *GroupMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetMonthlyLimitUsd(v)
+		return nil
+	case group.FieldFrameworkTagSecret:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetFrameworkTagSecret(v)
+		return nil
+	case group.FieldUntaggedDailyLimitUsd:
+		v, ok := value.(float64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUntaggedDailyLimitUsd(v)
 		return nil
 	case group.FieldDefaultValidityDays:
 		v, ok := value.(int)
@@ -27048,6 +27185,9 @@ func (m *GroupMutation) AddedFields() []string {
 	if m.addmonthly_limit_usd != nil {
 		fields = append(fields, group.FieldMonthlyLimitUsd)
 	}
+	if m.adduntagged_daily_limit_usd != nil {
+		fields = append(fields, group.FieldUntaggedDailyLimitUsd)
+	}
 	if m.adddefault_validity_days != nil {
 		fields = append(fields, group.FieldDefaultValidityDays)
 	}
@@ -27132,6 +27272,8 @@ func (m *GroupMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedWeeklyLimitUsd()
 	case group.FieldMonthlyLimitUsd:
 		return m.AddedMonthlyLimitUsd()
+	case group.FieldUntaggedDailyLimitUsd:
+		return m.AddedUntaggedDailyLimitUsd()
 	case group.FieldDefaultValidityDays:
 		return m.AddedDefaultValidityDays()
 	case group.FieldImageRateMultiplier:
@@ -27219,6 +27361,13 @@ func (m *GroupMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddMonthlyLimitUsd(v)
+		return nil
+	case group.FieldUntaggedDailyLimitUsd:
+		v, ok := value.(float64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddUntaggedDailyLimitUsd(v)
 		return nil
 	case group.FieldDefaultValidityDays:
 		v, ok := value.(int)
@@ -27400,6 +27549,9 @@ func (m *GroupMutation) ClearedFields() []string {
 	if m.FieldCleared(group.FieldMonthlyLimitUsd) {
 		fields = append(fields, group.FieldMonthlyLimitUsd)
 	}
+	if m.FieldCleared(group.FieldUntaggedDailyLimitUsd) {
+		fields = append(fields, group.FieldUntaggedDailyLimitUsd)
+	}
 	if m.FieldCleared(group.FieldImagePrice1k) {
 		fields = append(fields, group.FieldImagePrice1k)
 	}
@@ -27479,6 +27631,9 @@ func (m *GroupMutation) ClearField(name string) error {
 		return nil
 	case group.FieldMonthlyLimitUsd:
 		m.ClearMonthlyLimitUsd()
+		return nil
+	case group.FieldUntaggedDailyLimitUsd:
+		m.ClearUntaggedDailyLimitUsd()
 		return nil
 	case group.FieldImagePrice1k:
 		m.ClearImagePrice1k()
@@ -27592,6 +27747,12 @@ func (m *GroupMutation) ResetField(name string) error {
 		return nil
 	case group.FieldMonthlyLimitUsd:
 		m.ResetMonthlyLimitUsd()
+		return nil
+	case group.FieldFrameworkTagSecret:
+		m.ResetFrameworkTagSecret()
+		return nil
+	case group.FieldUntaggedDailyLimitUsd:
+		m.ResetUntaggedDailyLimitUsd()
 		return nil
 	case group.FieldDefaultValidityDays:
 		m.ResetDefaultValidityDays()
@@ -55788,39 +55949,41 @@ func (m *UserPlatformQuotaMutation) ResetEdge(name string) error {
 // UserSubscriptionMutation represents an operation that mutates the UserSubscription nodes in the graph.
 type UserSubscriptionMutation struct {
 	config
-	op                      Op
-	typ                     string
-	id                      *int64
-	created_at              *time.Time
-	updated_at              *time.Time
-	deleted_at              *time.Time
-	starts_at               *time.Time
-	expires_at              *time.Time
-	status                  *string
-	daily_window_start      *time.Time
-	weekly_window_start     *time.Time
-	monthly_window_start    *time.Time
-	daily_usage_usd         *float64
-	adddaily_usage_usd      *float64
-	weekly_usage_usd        *float64
-	addweekly_usage_usd     *float64
-	monthly_usage_usd       *float64
-	addmonthly_usage_usd    *float64
-	assigned_at             *time.Time
-	notes                   *string
-	clearedFields           map[string]struct{}
-	user                    *int64
-	cleareduser             bool
-	group                   *int64
-	clearedgroup            bool
-	assigned_by_user        *int64
-	clearedassigned_by_user bool
-	usage_logs              map[int64]struct{}
-	removedusage_logs       map[int64]struct{}
-	clearedusage_logs       bool
-	done                    bool
-	oldValue                func(context.Context) (*UserSubscription, error)
-	predicates              []predicate.UserSubscription
+	op                          Op
+	typ                         string
+	id                          *int64
+	created_at                  *time.Time
+	updated_at                  *time.Time
+	deleted_at                  *time.Time
+	starts_at                   *time.Time
+	expires_at                  *time.Time
+	status                      *string
+	daily_window_start          *time.Time
+	weekly_window_start         *time.Time
+	monthly_window_start        *time.Time
+	daily_usage_usd             *float64
+	adddaily_usage_usd          *float64
+	weekly_usage_usd            *float64
+	addweekly_usage_usd         *float64
+	monthly_usage_usd           *float64
+	addmonthly_usage_usd        *float64
+	daily_untagged_usage_usd    *float64
+	adddaily_untagged_usage_usd *float64
+	assigned_at                 *time.Time
+	notes                       *string
+	clearedFields               map[string]struct{}
+	user                        *int64
+	cleareduser                 bool
+	group                       *int64
+	clearedgroup                bool
+	assigned_by_user            *int64
+	clearedassigned_by_user     bool
+	usage_logs                  map[int64]struct{}
+	removedusage_logs           map[int64]struct{}
+	clearedusage_logs           bool
+	done                        bool
+	oldValue                    func(context.Context) (*UserSubscription, error)
+	predicates                  []predicate.UserSubscription
 }
 
 var _ ent.Mutation = (*UserSubscriptionMutation)(nil)
@@ -56537,6 +56700,62 @@ func (m *UserSubscriptionMutation) ResetMonthlyUsageUsd() {
 	m.addmonthly_usage_usd = nil
 }
 
+// SetDailyUntaggedUsageUsd sets the "daily_untagged_usage_usd" field.
+func (m *UserSubscriptionMutation) SetDailyUntaggedUsageUsd(f float64) {
+	m.daily_untagged_usage_usd = &f
+	m.adddaily_untagged_usage_usd = nil
+}
+
+// DailyUntaggedUsageUsd returns the value of the "daily_untagged_usage_usd" field in the mutation.
+func (m *UserSubscriptionMutation) DailyUntaggedUsageUsd() (r float64, exists bool) {
+	v := m.daily_untagged_usage_usd
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDailyUntaggedUsageUsd returns the old "daily_untagged_usage_usd" field's value of the UserSubscription entity.
+// If the UserSubscription object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserSubscriptionMutation) OldDailyUntaggedUsageUsd(ctx context.Context) (v float64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDailyUntaggedUsageUsd is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDailyUntaggedUsageUsd requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDailyUntaggedUsageUsd: %w", err)
+	}
+	return oldValue.DailyUntaggedUsageUsd, nil
+}
+
+// AddDailyUntaggedUsageUsd adds f to the "daily_untagged_usage_usd" field.
+func (m *UserSubscriptionMutation) AddDailyUntaggedUsageUsd(f float64) {
+	if m.adddaily_untagged_usage_usd != nil {
+		*m.adddaily_untagged_usage_usd += f
+	} else {
+		m.adddaily_untagged_usage_usd = &f
+	}
+}
+
+// AddedDailyUntaggedUsageUsd returns the value that was added to the "daily_untagged_usage_usd" field in this mutation.
+func (m *UserSubscriptionMutation) AddedDailyUntaggedUsageUsd() (r float64, exists bool) {
+	v := m.adddaily_untagged_usage_usd
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetDailyUntaggedUsageUsd resets all changes to the "daily_untagged_usage_usd" field.
+func (m *UserSubscriptionMutation) ResetDailyUntaggedUsageUsd() {
+	m.daily_untagged_usage_usd = nil
+	m.adddaily_untagged_usage_usd = nil
+}
+
 // SetAssignedBy sets the "assigned_by" field.
 func (m *UserSubscriptionMutation) SetAssignedBy(i int64) {
 	m.assigned_by_user = &i
@@ -56853,7 +57072,7 @@ func (m *UserSubscriptionMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UserSubscriptionMutation) Fields() []string {
-	fields := make([]string, 0, 17)
+	fields := make([]string, 0, 18)
 	if m.created_at != nil {
 		fields = append(fields, usersubscription.FieldCreatedAt)
 	}
@@ -56895,6 +57114,9 @@ func (m *UserSubscriptionMutation) Fields() []string {
 	}
 	if m.monthly_usage_usd != nil {
 		fields = append(fields, usersubscription.FieldMonthlyUsageUsd)
+	}
+	if m.daily_untagged_usage_usd != nil {
+		fields = append(fields, usersubscription.FieldDailyUntaggedUsageUsd)
 	}
 	if m.assigned_by_user != nil {
 		fields = append(fields, usersubscription.FieldAssignedBy)
@@ -56941,6 +57163,8 @@ func (m *UserSubscriptionMutation) Field(name string) (ent.Value, bool) {
 		return m.WeeklyUsageUsd()
 	case usersubscription.FieldMonthlyUsageUsd:
 		return m.MonthlyUsageUsd()
+	case usersubscription.FieldDailyUntaggedUsageUsd:
+		return m.DailyUntaggedUsageUsd()
 	case usersubscription.FieldAssignedBy:
 		return m.AssignedBy()
 	case usersubscription.FieldAssignedAt:
@@ -56984,6 +57208,8 @@ func (m *UserSubscriptionMutation) OldField(ctx context.Context, name string) (e
 		return m.OldWeeklyUsageUsd(ctx)
 	case usersubscription.FieldMonthlyUsageUsd:
 		return m.OldMonthlyUsageUsd(ctx)
+	case usersubscription.FieldDailyUntaggedUsageUsd:
+		return m.OldDailyUntaggedUsageUsd(ctx)
 	case usersubscription.FieldAssignedBy:
 		return m.OldAssignedBy(ctx)
 	case usersubscription.FieldAssignedAt:
@@ -57097,6 +57323,13 @@ func (m *UserSubscriptionMutation) SetField(name string, value ent.Value) error 
 		}
 		m.SetMonthlyUsageUsd(v)
 		return nil
+	case usersubscription.FieldDailyUntaggedUsageUsd:
+		v, ok := value.(float64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDailyUntaggedUsageUsd(v)
+		return nil
 	case usersubscription.FieldAssignedBy:
 		v, ok := value.(int64)
 		if !ok {
@@ -57135,6 +57368,9 @@ func (m *UserSubscriptionMutation) AddedFields() []string {
 	if m.addmonthly_usage_usd != nil {
 		fields = append(fields, usersubscription.FieldMonthlyUsageUsd)
 	}
+	if m.adddaily_untagged_usage_usd != nil {
+		fields = append(fields, usersubscription.FieldDailyUntaggedUsageUsd)
+	}
 	return fields
 }
 
@@ -57149,6 +57385,8 @@ func (m *UserSubscriptionMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedWeeklyUsageUsd()
 	case usersubscription.FieldMonthlyUsageUsd:
 		return m.AddedMonthlyUsageUsd()
+	case usersubscription.FieldDailyUntaggedUsageUsd:
+		return m.AddedDailyUntaggedUsageUsd()
 	}
 	return nil, false
 }
@@ -57178,6 +57416,13 @@ func (m *UserSubscriptionMutation) AddField(name string, value ent.Value) error 
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddMonthlyUsageUsd(v)
+		return nil
+	case usersubscription.FieldDailyUntaggedUsageUsd:
+		v, ok := value.(float64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddDailyUntaggedUsageUsd(v)
 		return nil
 	}
 	return fmt.Errorf("unknown UserSubscription numeric field %s", name)
@@ -57286,6 +57531,9 @@ func (m *UserSubscriptionMutation) ResetField(name string) error {
 		return nil
 	case usersubscription.FieldMonthlyUsageUsd:
 		m.ResetMonthlyUsageUsd()
+		return nil
+	case usersubscription.FieldDailyUntaggedUsageUsd:
+		m.ResetDailyUntaggedUsageUsd()
 		return nil
 	case usersubscription.FieldAssignedBy:
 		m.ResetAssignedBy()

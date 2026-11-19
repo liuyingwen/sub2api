@@ -324,6 +324,47 @@ func (_u *GroupUpdate) ClearMonthlyLimitUsd() *GroupUpdate {
 	return _u
 }
 
+// SetFrameworkTagSecret sets the "framework_tag_secret" field.
+func (_u *GroupUpdate) SetFrameworkTagSecret(v string) *GroupUpdate {
+	_u.mutation.SetFrameworkTagSecret(v)
+	return _u
+}
+
+// SetNillableFrameworkTagSecret sets the "framework_tag_secret" field if the given value is not nil.
+func (_u *GroupUpdate) SetNillableFrameworkTagSecret(v *string) *GroupUpdate {
+	if v != nil {
+		_u.SetFrameworkTagSecret(*v)
+	}
+	return _u
+}
+
+// SetUntaggedDailyLimitUsd sets the "untagged_daily_limit_usd" field.
+func (_u *GroupUpdate) SetUntaggedDailyLimitUsd(v float64) *GroupUpdate {
+	_u.mutation.ResetUntaggedDailyLimitUsd()
+	_u.mutation.SetUntaggedDailyLimitUsd(v)
+	return _u
+}
+
+// SetNillableUntaggedDailyLimitUsd sets the "untagged_daily_limit_usd" field if the given value is not nil.
+func (_u *GroupUpdate) SetNillableUntaggedDailyLimitUsd(v *float64) *GroupUpdate {
+	if v != nil {
+		_u.SetUntaggedDailyLimitUsd(*v)
+	}
+	return _u
+}
+
+// AddUntaggedDailyLimitUsd adds value to the "untagged_daily_limit_usd" field.
+func (_u *GroupUpdate) AddUntaggedDailyLimitUsd(v float64) *GroupUpdate {
+	_u.mutation.AddUntaggedDailyLimitUsd(v)
+	return _u
+}
+
+// ClearUntaggedDailyLimitUsd clears the value of the "untagged_daily_limit_usd" field.
+func (_u *GroupUpdate) ClearUntaggedDailyLimitUsd() *GroupUpdate {
+	_u.mutation.ClearUntaggedDailyLimitUsd()
+	return _u
+}
+
 // SetDefaultValidityDays sets the "default_validity_days" field.
 func (_u *GroupUpdate) SetDefaultValidityDays(v int) *GroupUpdate {
 	_u.mutation.ResetDefaultValidityDays()
@@ -1547,6 +1588,11 @@ func (_u *GroupUpdate) check() error {
 			return &ValidationError{Name: "subscription_type", err: fmt.Errorf(`ent: validator failed for field "Group.subscription_type": %w`, err)}
 		}
 	}
+	if v, ok := _u.mutation.FrameworkTagSecret(); ok {
+		if err := group.FrameworkTagSecretValidator(v); err != nil {
+			return &ValidationError{Name: "framework_tag_secret", err: fmt.Errorf(`ent: validator failed for field "Group.framework_tag_secret": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.SearchPricePer1k(); ok {
 		if err := group.SearchPricePer1kValidator(v); err != nil {
 			return &ValidationError{Name: "search_price_per_1k", err: fmt.Errorf(`ent: validator failed for field "Group.search_price_per_1k": %w`, err)}
@@ -1680,6 +1726,18 @@ func (_u *GroupUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if _u.mutation.MonthlyLimitUsdCleared() {
 		_spec.ClearField(group.FieldMonthlyLimitUsd, field.TypeFloat64)
+	}
+	if value, ok := _u.mutation.FrameworkTagSecret(); ok {
+		_spec.SetField(group.FieldFrameworkTagSecret, field.TypeString, value)
+	}
+	if value, ok := _u.mutation.UntaggedDailyLimitUsd(); ok {
+		_spec.SetField(group.FieldUntaggedDailyLimitUsd, field.TypeFloat64, value)
+	}
+	if value, ok := _u.mutation.AddedUntaggedDailyLimitUsd(); ok {
+		_spec.AddField(group.FieldUntaggedDailyLimitUsd, field.TypeFloat64, value)
+	}
+	if _u.mutation.UntaggedDailyLimitUsdCleared() {
+		_spec.ClearField(group.FieldUntaggedDailyLimitUsd, field.TypeFloat64)
 	}
 	if value, ok := _u.mutation.DefaultValidityDays(); ok {
 		_spec.SetField(group.FieldDefaultValidityDays, field.TypeInt, value)
@@ -2558,6 +2616,47 @@ func (_u *GroupUpdateOne) AddMonthlyLimitUsd(v float64) *GroupUpdateOne {
 // ClearMonthlyLimitUsd clears the value of the "monthly_limit_usd" field.
 func (_u *GroupUpdateOne) ClearMonthlyLimitUsd() *GroupUpdateOne {
 	_u.mutation.ClearMonthlyLimitUsd()
+	return _u
+}
+
+// SetFrameworkTagSecret sets the "framework_tag_secret" field.
+func (_u *GroupUpdateOne) SetFrameworkTagSecret(v string) *GroupUpdateOne {
+	_u.mutation.SetFrameworkTagSecret(v)
+	return _u
+}
+
+// SetNillableFrameworkTagSecret sets the "framework_tag_secret" field if the given value is not nil.
+func (_u *GroupUpdateOne) SetNillableFrameworkTagSecret(v *string) *GroupUpdateOne {
+	if v != nil {
+		_u.SetFrameworkTagSecret(*v)
+	}
+	return _u
+}
+
+// SetUntaggedDailyLimitUsd sets the "untagged_daily_limit_usd" field.
+func (_u *GroupUpdateOne) SetUntaggedDailyLimitUsd(v float64) *GroupUpdateOne {
+	_u.mutation.ResetUntaggedDailyLimitUsd()
+	_u.mutation.SetUntaggedDailyLimitUsd(v)
+	return _u
+}
+
+// SetNillableUntaggedDailyLimitUsd sets the "untagged_daily_limit_usd" field if the given value is not nil.
+func (_u *GroupUpdateOne) SetNillableUntaggedDailyLimitUsd(v *float64) *GroupUpdateOne {
+	if v != nil {
+		_u.SetUntaggedDailyLimitUsd(*v)
+	}
+	return _u
+}
+
+// AddUntaggedDailyLimitUsd adds value to the "untagged_daily_limit_usd" field.
+func (_u *GroupUpdateOne) AddUntaggedDailyLimitUsd(v float64) *GroupUpdateOne {
+	_u.mutation.AddUntaggedDailyLimitUsd(v)
+	return _u
+}
+
+// ClearUntaggedDailyLimitUsd clears the value of the "untagged_daily_limit_usd" field.
+func (_u *GroupUpdateOne) ClearUntaggedDailyLimitUsd() *GroupUpdateOne {
+	_u.mutation.ClearUntaggedDailyLimitUsd()
 	return _u
 }
 
@@ -3797,6 +3896,11 @@ func (_u *GroupUpdateOne) check() error {
 			return &ValidationError{Name: "subscription_type", err: fmt.Errorf(`ent: validator failed for field "Group.subscription_type": %w`, err)}
 		}
 	}
+	if v, ok := _u.mutation.FrameworkTagSecret(); ok {
+		if err := group.FrameworkTagSecretValidator(v); err != nil {
+			return &ValidationError{Name: "framework_tag_secret", err: fmt.Errorf(`ent: validator failed for field "Group.framework_tag_secret": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.SearchPricePer1k(); ok {
 		if err := group.SearchPricePer1kValidator(v); err != nil {
 			return &ValidationError{Name: "search_price_per_1k", err: fmt.Errorf(`ent: validator failed for field "Group.search_price_per_1k": %w`, err)}
@@ -3947,6 +4051,18 @@ func (_u *GroupUpdateOne) sqlSave(ctx context.Context) (_node *Group, err error)
 	}
 	if _u.mutation.MonthlyLimitUsdCleared() {
 		_spec.ClearField(group.FieldMonthlyLimitUsd, field.TypeFloat64)
+	}
+	if value, ok := _u.mutation.FrameworkTagSecret(); ok {
+		_spec.SetField(group.FieldFrameworkTagSecret, field.TypeString, value)
+	}
+	if value, ok := _u.mutation.UntaggedDailyLimitUsd(); ok {
+		_spec.SetField(group.FieldUntaggedDailyLimitUsd, field.TypeFloat64, value)
+	}
+	if value, ok := _u.mutation.AddedUntaggedDailyLimitUsd(); ok {
+		_spec.AddField(group.FieldUntaggedDailyLimitUsd, field.TypeFloat64, value)
+	}
+	if _u.mutation.UntaggedDailyLimitUsdCleared() {
+		_spec.ClearField(group.FieldUntaggedDailyLimitUsd, field.TypeFloat64)
 	}
 	if value, ok := _u.mutation.DefaultValidityDays(); ok {
 		_spec.SetField(group.FieldDefaultValidityDays, field.TypeInt, value)

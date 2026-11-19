@@ -250,6 +250,27 @@ func (_u *UserSubscriptionUpdate) AddMonthlyUsageUsd(v float64) *UserSubscriptio
 	return _u
 }
 
+// SetDailyUntaggedUsageUsd sets the "daily_untagged_usage_usd" field.
+func (_u *UserSubscriptionUpdate) SetDailyUntaggedUsageUsd(v float64) *UserSubscriptionUpdate {
+	_u.mutation.ResetDailyUntaggedUsageUsd()
+	_u.mutation.SetDailyUntaggedUsageUsd(v)
+	return _u
+}
+
+// SetNillableDailyUntaggedUsageUsd sets the "daily_untagged_usage_usd" field if the given value is not nil.
+func (_u *UserSubscriptionUpdate) SetNillableDailyUntaggedUsageUsd(v *float64) *UserSubscriptionUpdate {
+	if v != nil {
+		_u.SetDailyUntaggedUsageUsd(*v)
+	}
+	return _u
+}
+
+// AddDailyUntaggedUsageUsd adds value to the "daily_untagged_usage_usd" field.
+func (_u *UserSubscriptionUpdate) AddDailyUntaggedUsageUsd(v float64) *UserSubscriptionUpdate {
+	_u.mutation.AddDailyUntaggedUsageUsd(v)
+	return _u
+}
+
 // SetAssignedBy sets the "assigned_by" field.
 func (_u *UserSubscriptionUpdate) SetAssignedBy(v int64) *UserSubscriptionUpdate {
 	_u.mutation.SetAssignedBy(v)
@@ -515,6 +536,12 @@ func (_u *UserSubscriptionUpdate) sqlSave(ctx context.Context) (_node int, err e
 	}
 	if value, ok := _u.mutation.AddedMonthlyUsageUsd(); ok {
 		_spec.AddField(usersubscription.FieldMonthlyUsageUsd, field.TypeFloat64, value)
+	}
+	if value, ok := _u.mutation.DailyUntaggedUsageUsd(); ok {
+		_spec.SetField(usersubscription.FieldDailyUntaggedUsageUsd, field.TypeFloat64, value)
+	}
+	if value, ok := _u.mutation.AddedDailyUntaggedUsageUsd(); ok {
+		_spec.AddField(usersubscription.FieldDailyUntaggedUsageUsd, field.TypeFloat64, value)
 	}
 	if value, ok := _u.mutation.AssignedAt(); ok {
 		_spec.SetField(usersubscription.FieldAssignedAt, field.TypeTime, value)
@@ -896,6 +923,27 @@ func (_u *UserSubscriptionUpdateOne) AddMonthlyUsageUsd(v float64) *UserSubscrip
 	return _u
 }
 
+// SetDailyUntaggedUsageUsd sets the "daily_untagged_usage_usd" field.
+func (_u *UserSubscriptionUpdateOne) SetDailyUntaggedUsageUsd(v float64) *UserSubscriptionUpdateOne {
+	_u.mutation.ResetDailyUntaggedUsageUsd()
+	_u.mutation.SetDailyUntaggedUsageUsd(v)
+	return _u
+}
+
+// SetNillableDailyUntaggedUsageUsd sets the "daily_untagged_usage_usd" field if the given value is not nil.
+func (_u *UserSubscriptionUpdateOne) SetNillableDailyUntaggedUsageUsd(v *float64) *UserSubscriptionUpdateOne {
+	if v != nil {
+		_u.SetDailyUntaggedUsageUsd(*v)
+	}
+	return _u
+}
+
+// AddDailyUntaggedUsageUsd adds value to the "daily_untagged_usage_usd" field.
+func (_u *UserSubscriptionUpdateOne) AddDailyUntaggedUsageUsd(v float64) *UserSubscriptionUpdateOne {
+	_u.mutation.AddDailyUntaggedUsageUsd(v)
+	return _u
+}
+
 // SetAssignedBy sets the "assigned_by" field.
 func (_u *UserSubscriptionUpdateOne) SetAssignedBy(v int64) *UserSubscriptionUpdateOne {
 	_u.mutation.SetAssignedBy(v)
@@ -1191,6 +1239,12 @@ func (_u *UserSubscriptionUpdateOne) sqlSave(ctx context.Context) (_node *UserSu
 	}
 	if value, ok := _u.mutation.AddedMonthlyUsageUsd(); ok {
 		_spec.AddField(usersubscription.FieldMonthlyUsageUsd, field.TypeFloat64, value)
+	}
+	if value, ok := _u.mutation.DailyUntaggedUsageUsd(); ok {
+		_spec.SetField(usersubscription.FieldDailyUntaggedUsageUsd, field.TypeFloat64, value)
+	}
+	if value, ok := _u.mutation.AddedDailyUntaggedUsageUsd(); ok {
+		_spec.AddField(usersubscription.FieldDailyUntaggedUsageUsd, field.TypeFloat64, value)
 	}
 	if value, ok := _u.mutation.AssignedAt(); ok {
 		_spec.SetField(usersubscription.FieldAssignedAt, field.TypeTime, value)

@@ -284,6 +284,40 @@
                 </div>
               </div>
 
+              <!-- Untagged Daily Usage (requests without framework tag) -->
+              <div v-if="row.group?.untagged_daily_limit_usd != null" class="usage-row">
+                <div class="flex items-center gap-2">
+                  <span class="usage-label">{{ t('admin.subscriptions.untaggedDaily') }}</span>
+                  <template v-if="row.group.untagged_daily_limit_usd > 0">
+                    <div class="h-1.5 flex-1 rounded-full bg-gray-200 dark:bg-dark-600">
+                      <div
+                        class="h-1.5 rounded-full transition-all"
+                        :class="
+                          getProgressClass(
+                            row.daily_untagged_usage_usd,
+                            row.group.untagged_daily_limit_usd
+                          )
+                        "
+                        :style="{
+                          width: getProgressWidth(
+                            row.daily_untagged_usage_usd,
+                            row.group.untagged_daily_limit_usd
+                          )
+                        }"
+                      ></div>
+                    </div>
+                    <span class="usage-amount">
+                      ${{ (row.daily_untagged_usage_usd || 0).toFixed(2) }}
+                      <span class="text-gray-400">/</span>
+                      ${{ row.group.untagged_daily_limit_usd.toFixed(2) }}
+                    </span>
+                  </template>
+                  <span v-else class="text-xs text-gray-500 dark:text-dark-400">
+                    {{ t('admin.subscriptions.untaggedTagRequired') }}
+                  </span>
+                </div>
+              </div>
+
               <!-- Weekly Usage -->
               <div v-if="row.group?.weekly_limit_usd" class="usage-row">
                 <div class="flex items-center gap-2">

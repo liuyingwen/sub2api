@@ -592,6 +592,8 @@ export interface Group {
   daily_limit_usd: number | null
   weekly_limit_usd: number | null
   monthly_limit_usd: number | null
+  /** 未携带框架标识请求的每日上限；null 不限制，0 表示必须带标识 */
+  untagged_daily_limit_usd?: number | null
   long_context_pricing_enabled: boolean
   // 图片生成计费配置
   allow_image_generation: boolean
@@ -644,6 +646,8 @@ export interface AdminGroup extends Group {
   i18n?: GroupI18n
   force_openai_fast: boolean
   force_openai_ultrafast: boolean
+  /** 框架标识密钥（仅管理端返回） */
+  framework_tag_secret?: string
   free_openai_fast: boolean
   model_pricing: import('@/api/admin/channels').ChannelModelPricing[]
   // 分组利润控制（openai/anthropic/gemini/grok/antigravity 分组可启用；margin/buffer 为小数存储）。
@@ -817,9 +821,11 @@ export interface CreateGroupRequest {
   daily_limit_usd?: number | null
   weekly_limit_usd?: number | null
   monthly_limit_usd?: number | null
+  untagged_daily_limit_usd?: number | null
   long_context_pricing_enabled?: boolean
   force_openai_fast?: boolean
   force_openai_ultrafast?: boolean
+  framework_tag_secret?: string
   free_openai_fast?: boolean
   model_pricing?: import('@/api/admin/channels').ChannelModelPricing[]
   allow_image_generation?: boolean
@@ -886,9 +892,11 @@ export interface UpdateGroupRequest {
   daily_limit_usd?: number | null
   weekly_limit_usd?: number | null
   monthly_limit_usd?: number | null
+  untagged_daily_limit_usd?: number | null
   long_context_pricing_enabled?: boolean
   force_openai_fast?: boolean
   force_openai_ultrafast?: boolean
+  framework_tag_secret?: string
   free_openai_fast?: boolean
   model_pricing?: import('@/api/admin/channels').ChannelModelPricing[]
   allow_image_generation?: boolean
@@ -2193,6 +2201,8 @@ export interface UserSubscription {
   daily_usage_usd: number
   weekly_usage_usd: number
   monthly_usage_usd: number
+  /** 当日未携带框架标识请求的用量（包含在 daily_usage_usd 内） */
+  daily_untagged_usage_usd?: number
   daily_window_start: string | null
   weekly_window_start: string | null
   monthly_window_start: string | null

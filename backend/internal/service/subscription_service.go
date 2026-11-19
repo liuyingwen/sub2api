@@ -391,6 +391,7 @@ func renewedSubscriptionTerm(existingSub *UserSubscription, notes string, starts
 	renewed.WeeklyWindowStart = &periodicWindowStart
 	renewed.MonthlyWindowStart = &periodicWindowStart
 	renewed.DailyUsageUSD = 0
+	renewed.DailyUntaggedUsageUSD = 0
 	renewed.WeeklyUsageUSD = 0
 	renewed.MonthlyUsageUSD = 0
 	renewed.Notes = appendSubscriptionNotes(existingSub.Notes, notes)
@@ -837,6 +838,7 @@ func normalizeExpiredWindowsAt(subs []UserSubscription, now time.Time) {
 		if sub.canAutomaticallyResetDailyAt(now) {
 			sub.DailyWindowStart = nil
 			sub.DailyUsageUSD = 0
+			sub.DailyUntaggedUsageUSD = 0
 		}
 		// 周窗口过期：清零展示数据
 		if sub.canAutomaticallyResetWeeklyAt(now) {
@@ -922,6 +924,7 @@ func (s *SubscriptionService) CheckAndResetWindows(ctx context.Context, sub *Use
 		}
 		sub.DailyWindowStart = &windowStart
 		sub.DailyUsageUSD = 0
+		sub.DailyUntaggedUsageUSD = 0
 		needsInvalidateCache = true
 	}
 
@@ -1019,6 +1022,7 @@ func (s *SubscriptionService) ValidateAndCheckLimits(sub *UserSubscription, grou
 	//    调用方随后同步推进 DB 窗口，并用回读快照重新校验。
 	if sub.canAutomaticallyResetDailyAt(now) {
 		sub.DailyUsageUSD = 0
+		sub.DailyUntaggedUsageUSD = 0
 		needsMaintenance = true
 	}
 	if sub.canAutomaticallyResetWeeklyAt(now) {
@@ -1045,6 +1049,18 @@ func (s *SubscriptionService) ValidateAndCheckLimits(sub *UserSubscription, grou
 	}
 
 	return needsMaintenance, nil
+}
+
+// CheckUntaggedDailyLimit 对未携带框架标识的请求校验分组的无标识每日上限。
+// 需在 ValidateAndCheckLimits（含窗口维护）之后调用，以使用已修正的日窗口用量。
+func (s *SubscriptionService) CheckUntaggedDailyLimit(ctx context.Context, sub *UserSubscription, group *Group) error {
+	if sub == nil || group == nil || IsFrameworkTagged(ctx) || !group.HasUntaggedDailyLimit() {
+		return nil
+	}
+	if sub.DailyUntaggedUsageUSD >= *group.UntaggedDailyLimitUSD {
+		return ErrUntaggedDailyLimitExceeded
+	}
+	return nil
 }
 
 // DoWindowMaintenance 异步执行窗口维护（激活+重置）

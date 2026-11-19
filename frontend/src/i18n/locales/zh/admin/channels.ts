@@ -727,6 +727,8 @@ export default {
       allGroups: '全部分组',
       allPlatforms: '全部平台',
       daily: '每日',
+      untaggedDaily: '无标识',
+      untaggedTagRequired: '必须带框架标识',
       weekly: '每周',
       monthly: '每月',
       noLimits: '未配置限额',

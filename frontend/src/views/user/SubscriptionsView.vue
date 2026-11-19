@@ -137,6 +137,53 @@
               </p>
             </div>
 
+            <!-- Untagged Daily Usage (requests without framework tag) -->
+            <div
+              v-if="subscription.group?.untagged_daily_limit_usd != null"
+              class="space-y-2"
+            >
+              <div class="flex items-center justify-between">
+                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {{ t('userSubscriptions.untaggedDaily') }}
+                </span>
+                <span
+                  v-if="subscription.group.untagged_daily_limit_usd > 0"
+                  class="text-sm text-gray-500 dark:text-dark-400"
+                >
+                  ${{ (subscription.daily_untagged_usage_usd || 0).toFixed(2) }} / ${{
+                    subscription.group.untagged_daily_limit_usd.toFixed(2)
+                  }}
+                </span>
+              </div>
+              <div
+                v-if="subscription.group.untagged_daily_limit_usd > 0"
+                class="relative h-2 overflow-hidden rounded-full bg-gray-200 dark:bg-dark-600"
+              >
+                <div
+                  class="absolute inset-y-0 left-0 rounded-full transition-all duration-300"
+                  :class="
+                    getProgressBarClass(
+                      subscription.daily_untagged_usage_usd || 0,
+                      subscription.group.untagged_daily_limit_usd
+                    )
+                  "
+                  :style="{
+                    width: getProgressWidth(
+                      subscription.daily_untagged_usage_usd || 0,
+                      subscription.group.untagged_daily_limit_usd
+                    )
+                  }"
+                ></div>
+              </div>
+              <p class="text-xs text-gray-500 dark:text-dark-400">
+                {{
+                  subscription.group.untagged_daily_limit_usd > 0
+                    ? t('userSubscriptions.untaggedDailyHint')
+                    : t('userSubscriptions.untaggedTagRequired')
+                }}
+              </p>
+            </div>
+
             <!-- Weekly Usage -->
             <div v-if="subscription.group?.weekly_limit_usd" class="space-y-2">
               <div class="flex items-center justify-between">

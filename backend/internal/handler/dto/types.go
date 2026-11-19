@@ -107,6 +107,7 @@ type Group struct {
 	DailyLimitUSD             *float64 `json:"daily_limit_usd"`
 	WeeklyLimitUSD            *float64 `json:"weekly_limit_usd"`
 	MonthlyLimitUSD           *float64 `json:"monthly_limit_usd"`
+	UntaggedDailyLimitUSD     *float64 `json:"untagged_daily_limit_usd"`
 	LongContextPricingEnabled bool     `json:"long_context_pricing_enabled"`
 
 	// 图片生成计费配置（仅 antigravity 平台使用）
@@ -174,6 +175,8 @@ type AdminGroup struct {
 	// ForceOpenAIFast 是管理端请求策略，用户侧分组 DTO 无需暴露。
 	ForceOpenAIFast      bool `json:"force_openai_fast"`
 	ForceOpenAIUltrafast bool `json:"force_openai_ultrafast"`
+	// FrameworkTagSecret 框架标识密钥，仅管理端可见，用户侧分组 DTO 不得暴露。
+	FrameworkTagSecret string `json:"framework_tag_secret"`
 	// FreeOpenAIFast 是管理端计费策略，用户侧分组 DTO 无需暴露。
 	FreeOpenAIFast bool `json:"free_openai_fast"`
 
@@ -774,6 +777,8 @@ type UserSubscription struct {
 	DailyUsageUSD   float64 `json:"daily_usage_usd"`
 	WeeklyUsageUSD  float64 `json:"weekly_usage_usd"`
 	MonthlyUsageUSD float64 `json:"monthly_usage_usd"`
+	// DailyUntaggedUsageUSD 当日未携带框架标识请求的用量（包含在 DailyUsageUSD 内）。
+	DailyUntaggedUsageUSD float64 `json:"daily_untagged_usage_usd"`
 
 	CreatedAt time.Time  `json:"created_at"`
 	UpdatedAt time.Time  `json:"updated_at"`

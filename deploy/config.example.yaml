@@ -722,6 +722,32 @@ token_refresh:
   cycle_timeout_seconds: 240
 
 # =============================================================================
+# Framework Tag Configuration
+# 框架标识配置
+# =============================================================================
+# 1) The framework calls POST /framework/v1/token (Authorization: Bearer <API key>)
+#    and the server dispatches a short-lived token:
+#    {"token","expires_at","expires_in","header"}.
+# 2) When calling the model, it sends the token in header_name.
+# Tokens are AES-256-GCM encrypted with a key derived from the group's
+# framework_tag_secret (which never leaves the server), bound to the API key and
+# group, and expire after token_ttl_seconds. Valid tokens are exempt from the
+# group's untagged_daily_limit_usd; invalid or expired ones count as untagged
+# (response header X-Sub2API-Framework-Tag: ok / expired / invalid). The header is
+# always stripped before forwarding upstream.
+# 1) 框架用 API Key 调 POST /framework/v1/token，由服务端派发短期令牌；
+# 2) 请求大模型时在 header_name 请求头中携带该令牌。
+# 令牌用分组密钥派生的密钥做 AES-256-GCM 加密（分组密钥不出服务端），绑定 API Key 与分组，
+# token_ttl_seconds 后过期。有效令牌不受「无框架标识每日限额」约束；无效或过期按不带标识处理
+# （响应头 X-Sub2API-Framework-Tag 返回 ok / expired / invalid）。该请求头转发上游前会被删除。
+# Env: FRAMEWORK_AUTH_HEADER_NAME / FRAMEWORK_AUTH_TOKEN_TTL_SECONDS
+framework_auth:
+  header_name: "X-Sub2API-Framework-Token"
+  # Dispatched token lifetime in seconds (60-86400)
+  # 派发令牌有效期（秒，60-86400）
+  token_ttl_seconds: 3600
+
+# =============================================================================
 # API Key Auth Cache Configuration
 # API Key 认证缓存配置
 # =============================================================================

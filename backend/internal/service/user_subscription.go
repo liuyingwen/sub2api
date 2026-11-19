@@ -24,6 +24,8 @@ type UserSubscription struct {
 	DailyUsageUSD   float64
 	WeeklyUsageUSD  float64
 	MonthlyUsageUSD float64
+	// DailyUntaggedUsageUSD 当日窗口内未携带框架标识的用量（DailyUsageUSD 的子集）。
+	DailyUntaggedUsageUSD float64
 
 	AssignedBy *int64
 	AssignedAt time.Time
@@ -209,6 +211,14 @@ func (s *UserSubscription) CheckDailyLimit(group *Group, additionalCost float64)
 		return true
 	}
 	return s.DailyUsageUSD+additionalCost <= *group.DailyLimitUSD
+}
+
+// CheckUntaggedDailyLimit 校验无框架标识用量是否仍在分组上限内。
+func (s *UserSubscription) CheckUntaggedDailyLimit(group *Group, additionalCost float64) bool {
+	if !group.HasUntaggedDailyLimit() {
+		return true
+	}
+	return s.DailyUntaggedUsageUSD+additionalCost <= *group.UntaggedDailyLimitUSD
 }
 
 func (s *UserSubscription) CheckWeeklyLimit(group *Group, additionalCost float64) bool {

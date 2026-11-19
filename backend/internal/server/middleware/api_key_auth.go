@@ -173,11 +173,14 @@ func apiKeyAuthWithSubscription(apiKeyService *service.APIKeyService, subscripti
 		}
 		ctx := context.WithValue(c.Request.Context(), ctxkey.UserID, apiKey.User.ID)
 		c.Request = c.Request.WithContext(ctx)
+		if !IsFrameworkRoute(c.Request.URL.Path) {
+			applyFrameworkTag(c, cfg, apiKey)
+		}
 		billingInfoRequest := c.Request.URL.Path == "/v1/sub2api/billing"
 		// Async image task polling only reads data that already belongs to the
 		// authenticated key and must remain available after the completed
 		// generation consumes the key's remaining balance.
-		skipBilling := c.Request.URL.Path == "/v1/usage" || billingInfoRequest || isAsyncImageTaskRead(c.Request.Method, c.Request.URL.Path)
+		skipBilling := c.Request.URL.Path == "/v1/usage" || billingInfoRequest || isAsyncImageTaskRead(c.Request.Method, c.Request.URL.Path) || IsFrameworkRoute(c.Request.URL.Path)
 
 		// ── 4. SimpleMode → early return ─────────────────────────────
 
@@ -254,10 +257,14 @@ func apiKeyAuthWithSubscription(apiKeyService *service.APIKeyService, subscripti
 					subscription = refreshed
 					_, validateErr = subscriptionService.ValidateAndCheckLimits(subscription, apiKey.Group)
 				}
+				if validateErr == nil {
+					validateErr = subscriptionService.CheckUntaggedDailyLimit(c.Request.Context(), subscription, apiKey.Group)
+				}
 				if validateErr != nil {
 					code := "SUBSCRIPTION_INVALID"
 					status := 403
-					if errors.Is(validateErr, service.ErrDailyLimitExceeded) ||
+					if errors.Is(validateErr, service.ErrUntaggedDailyLimitExceeded) ||
+						errors.Is(validateErr, service.ErrDailyLimitExceeded) ||
 						errors.Is(validateErr, service.ErrWeeklyLimitExceeded) ||
 						errors.Is(validateErr, service.ErrMonthlyLimitExceeded) {
 						code = "USAGE_LIMIT_EXCEEDED"

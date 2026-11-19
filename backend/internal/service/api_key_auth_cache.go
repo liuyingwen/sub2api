@@ -70,6 +70,7 @@ type APIKeyAuthGroupSnapshot struct {
 	DailyLimitUSD                   *float64                      `json:"daily_limit_usd,omitempty"`
 	WeeklyLimitUSD                  *float64                      `json:"weekly_limit_usd,omitempty"`
 	MonthlyLimitUSD                 *float64                      `json:"monthly_limit_usd,omitempty"`
+	UntaggedDailyLimitUSD           *float64                      `json:"untagged_daily_limit_usd,omitempty"`
 	AllowImageGeneration            bool                          `json:"allow_image_generation"`
 	AllowBatchImageGeneration       bool                          `json:"allow_batch_image_generation"`
 	ImageCountBilling               bool                          `json:"image_count_billing"`
@@ -109,6 +110,7 @@ type APIKeyAuthGroupSnapshot struct {
 	AllowLive                   bool                              `json:"allow_live"`
 	ForceOpenAIFast             bool                              `json:"force_openai_fast"`
 	ForceOpenAIUltrafast        bool                              `json:"force_openai_ultrafast"`
+	FrameworkTagSecret          string                            `json:"framework_tag_secret,omitempty"`
 	FreeOpenAIFast              bool                              `json:"free_openai_fast"`
 	DefaultMappedModel          string                            `json:"default_mapped_model,omitempty"`
 	MessagesDispatchModelConfig OpenAIMessagesDispatchModelConfig `json:"messages_dispatch_model_config,omitempty"`

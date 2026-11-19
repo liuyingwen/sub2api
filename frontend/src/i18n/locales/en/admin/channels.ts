@@ -727,6 +727,8 @@ export default {
       allGroups: 'All Groups',
       allPlatforms: 'All Platforms',
       daily: 'Daily',
+      untaggedDaily: 'Untagged',
+      untaggedTagRequired: 'Framework tag required',
       weekly: 'Weekly',
       monthly: 'Monthly',
       noLimits: 'No limits configured',

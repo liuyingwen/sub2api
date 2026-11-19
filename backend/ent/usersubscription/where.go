@@ -125,6 +125,11 @@ func MonthlyUsageUsd(v float64) predicate.UserSubscription {
 	return predicate.UserSubscription(sql.FieldEQ(FieldMonthlyUsageUsd, v))
 }
 
+// DailyUntaggedUsageUsd applies equality check predicate on the "daily_untagged_usage_usd" field. It's identical to DailyUntaggedUsageUsdEQ.
+func DailyUntaggedUsageUsd(v float64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldEQ(FieldDailyUntaggedUsageUsd, v))
+}
+
 // AssignedBy applies equality check predicate on the "assigned_by" field. It's identical to AssignedByEQ.
 func AssignedBy(v int64) predicate.UserSubscription {
 	return predicate.UserSubscription(sql.FieldEQ(FieldAssignedBy, v))
@@ -723,6 +728,46 @@ func MonthlyUsageUsdLT(v float64) predicate.UserSubscription {
 // MonthlyUsageUsdLTE applies the LTE predicate on the "monthly_usage_usd" field.
 func MonthlyUsageUsdLTE(v float64) predicate.UserSubscription {
 	return predicate.UserSubscription(sql.FieldLTE(FieldMonthlyUsageUsd, v))
+}
+
+// DailyUntaggedUsageUsdEQ applies the EQ predicate on the "daily_untagged_usage_usd" field.
+func DailyUntaggedUsageUsdEQ(v float64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldEQ(FieldDailyUntaggedUsageUsd, v))
+}
+
+// DailyUntaggedUsageUsdNEQ applies the NEQ predicate on the "daily_untagged_usage_usd" field.
+func DailyUntaggedUsageUsdNEQ(v float64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldNEQ(FieldDailyUntaggedUsageUsd, v))
+}
+
+// DailyUntaggedUsageUsdIn applies the In predicate on the "daily_untagged_usage_usd" field.
+func DailyUntaggedUsageUsdIn(vs ...float64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldIn(FieldDailyUntaggedUsageUsd, vs...))
+}
+
+// DailyUntaggedUsageUsdNotIn applies the NotIn predicate on the "daily_untagged_usage_usd" field.
+func DailyUntaggedUsageUsdNotIn(vs ...float64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldNotIn(FieldDailyUntaggedUsageUsd, vs...))
+}
+
+// DailyUntaggedUsageUsdGT applies the GT predicate on the "daily_untagged_usage_usd" field.
+func DailyUntaggedUsageUsdGT(v float64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldGT(FieldDailyUntaggedUsageUsd, v))
+}
+
+// DailyUntaggedUsageUsdGTE applies the GTE predicate on the "daily_untagged_usage_usd" field.
+func DailyUntaggedUsageUsdGTE(v float64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldGTE(FieldDailyUntaggedUsageUsd, v))
+}
+
+// DailyUntaggedUsageUsdLT applies the LT predicate on the "daily_untagged_usage_usd" field.
+func DailyUntaggedUsageUsdLT(v float64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldLT(FieldDailyUntaggedUsageUsd, v))
+}
+
+// DailyUntaggedUsageUsdLTE applies the LTE predicate on the "daily_untagged_usage_usd" field.
+func DailyUntaggedUsageUsdLTE(v float64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldLTE(FieldDailyUntaggedUsageUsd, v))
 }
 
 // AssignedByEQ applies the EQ predicate on the "assigned_by" field.

@@ -366,6 +366,7 @@ func shouldBypassEmbeddedFrontend(path string) bool {
 		trimmed == "/.well-known/oauth-protected-resource/api/v1/mcp" ||
 		trimmed == "/.well-known/oauth-authorization-server" ||
 		strings.HasPrefix(trimmed, "/v1/") ||
+		strings.HasPrefix(trimmed, "/framework/") ||
 		strings.HasPrefix(trimmed, "/v1beta/") ||
 		strings.HasPrefix(trimmed, "/backend-api/") ||
 		strings.HasPrefix(trimmed, "/antigravity/") ||

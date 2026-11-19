@@ -43,6 +43,10 @@ type UsageBillingCommand struct {
 	APIKeyRateLimitCost float64
 	AccountQuotaCost    float64
 
+	// SubscriptionUntaggedCost 计入订阅「无框架标识日用量」的金额（SubscriptionCost 的子集，带标识请求为 0）。
+	// 由请求是否携带框架标识派生，不参与幂等指纹。
+	SubscriptionUntaggedCost float64
+
 	// AccountQuotaHasDailyLimit / AccountQuotaHasWeeklyLimit 记录构造命令时账号是否设置了日/周上限，
 	// 只用于选择账号配额累加语句，不参与幂等指纹；实际累加哪些维度以数据库中的账号配置为准。
 	AccountQuotaHasDailyLimit  bool
@@ -88,6 +92,7 @@ const UsageBillingMonetaryScale = 8
 func (c *UsageBillingCommand) quantizeMonetaryFields() {
 	c.BalanceCost = QuantizeUsageBillingAmount(c.BalanceCost)
 	c.SubscriptionCost = QuantizeUsageBillingAmount(c.SubscriptionCost)
+	c.SubscriptionUntaggedCost = QuantizeUsageBillingAmount(c.SubscriptionUntaggedCost)
 	c.APIKeyQuotaCost = QuantizeUsageBillingAmount(c.APIKeyQuotaCost)
 	c.APIKeyRateLimitCost = QuantizeUsageBillingAmount(c.APIKeyRateLimitCost)
 	c.AccountQuotaCost = QuantizeUsageBillingAmount(c.AccountQuotaCost)

@@ -168,6 +168,7 @@ func APIKeyAuthWithSubscriptionGoogle(apiKeyService *service.APIKeyService, subs
 			return
 		}
 
+		applyFrameworkTag(c, cfg, apiKey)
 		isSubscriptionType := apiKey.Group != nil && apiKey.Group.IsSubscriptionType()
 		if isSubscriptionType && subscriptionService != nil {
 			subscription, err := subscriptionService.GetActiveSubscription(
@@ -190,9 +191,13 @@ func APIKeyAuthWithSubscriptionGoogle(apiKeyService *service.APIKeyService, subs
 				subscription = refreshed
 				_, err = subscriptionService.ValidateAndCheckLimits(subscription, apiKey.Group)
 			}
+			if err == nil {
+				err = subscriptionService.CheckUntaggedDailyLimit(c.Request.Context(), subscription, apiKey.Group)
+			}
 			if err != nil {
 				status := 403
-				if errors.Is(err, service.ErrDailyLimitExceeded) ||
+				if errors.Is(err, service.ErrUntaggedDailyLimitExceeded) ||
+					errors.Is(err, service.ErrDailyLimitExceeded) ||
 					errors.Is(err, service.ErrWeeklyLimitExceeded) ||
 					errors.Is(err, service.ErrMonthlyLimitExceeded) {
 					status = 429

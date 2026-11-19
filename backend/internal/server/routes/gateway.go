@@ -46,6 +46,12 @@ func RegisterGatewayRoutes(
 	// 保证校验发生在合成路由改写与调度之前，且只看客户端书写的模型名。
 	groupModelAllowlist := middleware.GroupModelAllowlist()
 
+	// 框架令牌派发：API Key 鉴权，跳过计费执行（见 middleware.IsFrameworkRoute）。
+	framework := r.Group("/framework/v1")
+	framework.Use(clientRequestID)
+	framework.Use(gin.HandlerFunc(apiKeyAuth))
+	framework.POST("/token", middleware.FrameworkIssueToken(cfg))
+
 	isOpenAIResponsesCompatibleGatewayPlatform := func(c *gin.Context) bool {
 		// openai、grok 与多协议 API Key 供应商经 OpenAI 网关转发（平台清单）。
 		return domain.UsesOpenAIGateway(getGroupPlatform(c))

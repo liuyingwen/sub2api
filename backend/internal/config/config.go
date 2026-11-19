@@ -110,9 +110,42 @@ type Config struct {
 	BatchImage              BatchImageConfig              `mapstructure:"batch_image"`
 	ImageStorage            ImageStorageConfig            `mapstructure:"image_storage"`
 	Plugins                 PluginConfig                  `mapstructure:"plugins"`
+	FrameworkAuth           FrameworkAuthConfig           `mapstructure:"framework_auth"`
 
 	// Enforce only API-key spending windows in simple mode.
 	SimpleModeKeyRateLimitEnabled bool `mapstructure:"simple_mode_key_rate_limit_enabled" yaml:"simple_mode_key_rate_limit_enabled"`
+}
+
+// FrameworkAuthConfig 框架标识的全局参数（密钥配置在分组上）。
+//
+// 框架先用 API Key 调 POST /framework/v1/token 领取服务端派发的短期令牌，
+// 请求大模型时在 HeaderName 请求头中携带该令牌；有效令牌的请求不受分组「无框架标识每日限额」约束。
+type FrameworkAuthConfig struct {
+	HeaderName      string `mapstructure:"header_name"`
+	TokenTTLSeconds int    `mapstructure:"token_ttl_seconds"`
+}
+
+// EffectiveHeaderName returns the configured header name, falling back to the default.
+func (c FrameworkAuthConfig) EffectiveHeaderName() string {
+	if name := strings.TrimSpace(c.HeaderName); name != "" {
+		return name
+	}
+	return "X-Sub2API-Framework-Token"
+}
+
+// EffectiveTokenTTL 返回派发令牌的有效期：默认 1 小时，限制在 [1 分钟, 24 小时]。
+func (c FrameworkAuthConfig) EffectiveTokenTTL() time.Duration {
+	if c.TokenTTLSeconds <= 0 {
+		return time.Hour
+	}
+	d := time.Duration(c.TokenTTLSeconds) * time.Second
+	if d < time.Minute {
+		return time.Minute
+	}
+	if d > 24*time.Hour {
+		return 24 * time.Hour
+	}
+	return d
 }
 
 // SimpleModeConfig controls startup behavior in simple mode.
@@ -2478,6 +2511,10 @@ func setDefaults() {
 	viper.SetDefault("subscription_cache.l1_size", 16384)
 	viper.SetDefault("subscription_cache.l1_ttl_seconds", 10)
 	viper.SetDefault("subscription_cache.jitter_percent", 10)
+
+	// Framework-tagged traffic: the per-group secret lives on the group; only the header name is global.
+	viper.SetDefault("framework_auth.header_name", "X-Sub2API-Framework-Token")
+	viper.SetDefault("framework_auth.token_ttl_seconds", 3600)
 
 	// Dashboard cache
 	viper.SetDefault("dashboard_cache.enabled", true)

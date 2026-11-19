@@ -36,6 +36,7 @@ func (r *userSubscriptionRepository) Create(ctx context.Context, sub *service.Us
 		SetNillableWeeklyWindowStart(sub.WeeklyWindowStart).
 		SetNillableMonthlyWindowStart(sub.MonthlyWindowStart).
 		SetDailyUsageUsd(sub.DailyUsageUSD).
+		SetDailyUntaggedUsageUsd(sub.DailyUntaggedUsageUSD).
 		SetWeeklyUsageUsd(sub.WeeklyUsageUSD).
 		SetMonthlyUsageUsd(sub.MonthlyUsageUSD).
 		SetNillableAssignedBy(sub.AssignedBy)
@@ -147,6 +148,7 @@ func (r *userSubscriptionRepository) Update(ctx context.Context, sub *service.Us
 		SetNillableWeeklyWindowStart(sub.WeeklyWindowStart).
 		SetNillableMonthlyWindowStart(sub.MonthlyWindowStart).
 		SetDailyUsageUsd(sub.DailyUsageUSD).
+		SetDailyUntaggedUsageUsd(sub.DailyUntaggedUsageUSD).
 		SetWeeklyUsageUsd(sub.WeeklyUsageUSD).
 		SetMonthlyUsageUsd(sub.MonthlyUsageUSD).
 		SetNillableAssignedBy(sub.AssignedBy).
@@ -388,7 +390,7 @@ func (r *userSubscriptionRepository) ResetUsageWindows(ctx context.Context, id i
 	client := clientFromContext(ctx, r.client)
 	update := client.UserSubscription.UpdateOneID(id)
 	if resetDaily {
-		update.SetDailyUsageUsd(0).SetDailyWindowStart(dailyStart)
+		update.SetDailyUsageUsd(0).SetDailyUntaggedUsageUsd(0).SetDailyWindowStart(dailyStart)
 	}
 	if resetWeekly {
 		update.SetWeeklyUsageUsd(0).SetWeeklyWindowStart(periodicStart)
@@ -410,6 +412,7 @@ func (r *userSubscriptionRepository) ResetDailyUsage(ctx context.Context, id int
 	}
 	n, err := query.
 		SetDailyUsageUsd(0).
+		SetDailyUntaggedUsageUsd(0).
 		SetDailyWindowStart(newWindowStart).
 		Save(ctx)
 	return r.translateConditionalWindowReset(ctx, client, id, n, err)
@@ -475,6 +478,7 @@ func (r *userSubscriptionRepository) IncrementUsage(ctx context.Context, id int6
 			daily_usage_usd = us.daily_usage_usd + $1,
 			weekly_usage_usd = us.weekly_usage_usd + $1,
 			monthly_usage_usd = us.monthly_usage_usd + $1,
+			daily_untagged_usage_usd = us.daily_untagged_usage_usd + $3,
 			updated_at = NOW()
 		FROM groups g
 		WHERE us.id = $2
@@ -484,7 +488,7 @@ func (r *userSubscriptionRepository) IncrementUsage(ctx context.Context, id int6
 	`
 
 	client := clientFromContext(ctx, r.client)
-	result, err := client.ExecContext(ctx, updateSQL, costUSD, id)
+	result, err := client.ExecContext(ctx, updateSQL, costUSD, id, service.UntaggedCostForContext(ctx, costUSD))
 	if err != nil {
 		return err
 	}
@@ -641,24 +645,25 @@ func userSubscriptionEntityToServiceWithStatusMapping(m *dbent.UserSubscription,
 		status = service.SubscriptionStatusRevoked
 	}
 	out := &service.UserSubscription{
-		ID:                 m.ID,
-		UserID:             m.UserID,
-		GroupID:            m.GroupID,
-		StartsAt:           m.StartsAt,
-		ExpiresAt:          m.ExpiresAt,
-		Status:             status,
-		DailyWindowStart:   m.DailyWindowStart,
-		WeeklyWindowStart:  m.WeeklyWindowStart,
-		MonthlyWindowStart: m.MonthlyWindowStart,
-		DailyUsageUSD:      m.DailyUsageUsd,
-		WeeklyUsageUSD:     m.WeeklyUsageUsd,
-		MonthlyUsageUSD:    m.MonthlyUsageUsd,
-		AssignedBy:         m.AssignedBy,
-		AssignedAt:         m.AssignedAt,
-		Notes:              derefString(m.Notes),
-		CreatedAt:          m.CreatedAt,
-		UpdatedAt:          m.UpdatedAt,
-		DeletedAt:          m.DeletedAt,
+		ID:                    m.ID,
+		UserID:                m.UserID,
+		GroupID:               m.GroupID,
+		StartsAt:              m.StartsAt,
+		ExpiresAt:             m.ExpiresAt,
+		Status:                status,
+		DailyWindowStart:      m.DailyWindowStart,
+		WeeklyWindowStart:     m.WeeklyWindowStart,
+		MonthlyWindowStart:    m.MonthlyWindowStart,
+		DailyUsageUSD:         m.DailyUsageUsd,
+		DailyUntaggedUsageUSD: m.DailyUntaggedUsageUsd,
+		WeeklyUsageUSD:        m.WeeklyUsageUsd,
+		MonthlyUsageUSD:       m.MonthlyUsageUsd,
+		AssignedBy:            m.AssignedBy,
+		AssignedAt:            m.AssignedAt,
+		Notes:                 derefString(m.Notes),
+		CreatedAt:             m.CreatedAt,
+		UpdatedAt:             m.UpdatedAt,
+		DeletedAt:             m.DeletedAt,
 	}
 	if m.Edges.User != nil {
 		out.User = userEntityToService(m.Edges.User)

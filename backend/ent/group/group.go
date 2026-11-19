@@ -54,6 +54,10 @@ const (
 	FieldWeeklyLimitUsd = "weekly_limit_usd"
 	// FieldMonthlyLimitUsd holds the string denoting the monthly_limit_usd field in the database.
 	FieldMonthlyLimitUsd = "monthly_limit_usd"
+	// FieldFrameworkTagSecret holds the string denoting the framework_tag_secret field in the database.
+	FieldFrameworkTagSecret = "framework_tag_secret"
+	// FieldUntaggedDailyLimitUsd holds the string denoting the untagged_daily_limit_usd field in the database.
+	FieldUntaggedDailyLimitUsd = "untagged_daily_limit_usd"
 	// FieldDefaultValidityDays holds the string denoting the default_validity_days field in the database.
 	FieldDefaultValidityDays = "default_validity_days"
 	// FieldAllowImageGeneration holds the string denoting the allow_image_generation field in the database.
@@ -248,6 +252,8 @@ var Columns = []string{
 	FieldDailyLimitUsd,
 	FieldWeeklyLimitUsd,
 	FieldMonthlyLimitUsd,
+	FieldFrameworkTagSecret,
+	FieldUntaggedDailyLimitUsd,
 	FieldDefaultValidityDays,
 	FieldAllowImageGeneration,
 	FieldAllowBatchImageGeneration,
@@ -367,6 +373,10 @@ var (
 	DefaultSubscriptionType string
 	// SubscriptionTypeValidator is a validator for the "subscription_type" field. It is called by the builders before save.
 	SubscriptionTypeValidator func(string) error
+	// DefaultFrameworkTagSecret holds the default value on creation for the "framework_tag_secret" field.
+	DefaultFrameworkTagSecret string
+	// FrameworkTagSecretValidator is a validator for the "framework_tag_secret" field. It is called by the builders before save.
+	FrameworkTagSecretValidator func(string) error
 	// DefaultDefaultValidityDays holds the default value on creation for the "default_validity_days" field.
 	DefaultDefaultValidityDays int
 	// DefaultAllowImageGeneration holds the default value on creation for the "allow_image_generation" field.
@@ -547,6 +557,16 @@ func ByWeeklyLimitUsd(opts ...sql.OrderTermOption) OrderOption {
 // ByMonthlyLimitUsd orders the results by the monthly_limit_usd field.
 func ByMonthlyLimitUsd(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldMonthlyLimitUsd, opts...).ToFunc()
+}
+
+// ByFrameworkTagSecret orders the results by the framework_tag_secret field.
+func ByFrameworkTagSecret(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldFrameworkTagSecret, opts...).ToFunc()
+}
+
+// ByUntaggedDailyLimitUsd orders the results by the untagged_daily_limit_usd field.
+func ByUntaggedDailyLimitUsd(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUntaggedDailyLimitUsd, opts...).ToFunc()
 }
 
 // ByDefaultValidityDays orders the results by the default_validity_days field.

@@ -332,7 +332,13 @@ func applyUsageBillingBatchSubscriptions(ctx context.Context, tx *sql.Tx, cmds [
 		return *cmd.SubscriptionID, cmd.SubscriptionCost, true
 	})
 	for _, id := range ids {
-		if err := incrementUsageBillingSubscription(ctx, tx, id, groups[id].sum.InexactFloat64()); err != nil {
+		untagged := decimal.Zero
+		for _, i := range groups[id].indexes {
+			if c := cmds[i].SubscriptionUntaggedCost; c > 0 {
+				untagged = untagged.Add(usageBillingAmount(c))
+			}
+		}
+		if err := incrementUsageBillingSubscription(ctx, tx, id, groups[id].sum.InexactFloat64(), untagged.InexactFloat64()); err != nil {
 			return err
 		}
 	}

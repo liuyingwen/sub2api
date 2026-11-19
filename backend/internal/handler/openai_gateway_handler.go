@@ -258,6 +258,10 @@ func usageRecordContext(parent context.Context, base context.Context) context.Co
 	if requestID, _ := parent.Value(ctxkey.RequestID).(string); strings.TrimSpace(requestID) != "" {
 		base = context.WithValue(base, ctxkey.RequestID, strings.TrimSpace(requestID))
 	}
+	// 框架标识决定订阅用量是否计入无标识日额度，计费任务必须继承。
+	if service.IsFrameworkTagged(parent) {
+		base = service.SetFrameworkTagged(base, true)
+	}
 	return base
 }
 

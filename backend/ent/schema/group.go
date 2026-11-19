@@ -99,6 +99,16 @@ func (Group) Fields() []ent.Field {
 			Optional().
 			Nillable().
 			SchemaType(map[string]string{dialect.Postgres: "decimal(20,8)"}),
+		// framework_tag_secret: 框架标识密钥；请求头值与之相等的请求视为带标识（空 = 该分组不识别标识）。
+		field.String("framework_tag_secret").
+			MaxLen(256).
+			Default("").
+			Sensitive(),
+		// untagged_daily_limit_usd: 未携带框架标识的请求每日可用额度上限（nil = 不限制）。
+		field.Float("untagged_daily_limit_usd").
+			Optional().
+			Nillable().
+			SchemaType(map[string]string{dialect.Postgres: "decimal(20,8)"}),
 		field.Int("default_validity_days").
 			Default(30),
 

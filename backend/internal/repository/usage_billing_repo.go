@@ -173,7 +173,7 @@ func (r *usageBillingRepository) applyBatchImageBalanceHold(
 
 func (r *usageBillingRepository) applyUsageBillingEffects(ctx context.Context, tx *sql.Tx, cmd *service.UsageBillingCommand, result *service.UsageBillingApplyResult) error {
 	if cmd.SubscriptionCost > 0 && cmd.SubscriptionID != nil {
-		if err := incrementUsageBillingSubscription(ctx, tx, *cmd.SubscriptionID, cmd.SubscriptionCost); err != nil {
+		if err := incrementUsageBillingSubscription(ctx, tx, *cmd.SubscriptionID, cmd.SubscriptionCost, cmd.SubscriptionUntaggedCost); err != nil {
 			return err
 		}
 	}
@@ -214,13 +214,15 @@ func (r *usageBillingRepository) applyUsageBillingEffects(ctx context.Context, t
 	return nil
 }
 
-func incrementUsageBillingSubscription(ctx context.Context, tx *sql.Tx, subscriptionID int64, costUSD float64) error {
+// untaggedCostUSD 是 costUSD 中来自无框架标识请求的部分，累加到 daily_untagged_usage_usd。
+func incrementUsageBillingSubscription(ctx context.Context, tx *sql.Tx, subscriptionID int64, costUSD, untaggedCostUSD float64) error {
 	const updateSQL = `
 		UPDATE user_subscriptions us
 		SET
 			daily_usage_usd = us.daily_usage_usd + $1,
 			weekly_usage_usd = us.weekly_usage_usd + $1,
 			monthly_usage_usd = us.monthly_usage_usd + $1,
+			daily_untagged_usage_usd = us.daily_untagged_usage_usd + $3,
 			updated_at = NOW()
 		FROM groups g
 		WHERE us.id = $2
@@ -228,7 +230,7 @@ func incrementUsageBillingSubscription(ctx context.Context, tx *sql.Tx, subscrip
 			AND us.group_id = g.id
 			AND g.deleted_at IS NULL
 	`
-	res, err := tx.ExecContext(ctx, updateSQL, costUSD, subscriptionID)
+	res, err := tx.ExecContext(ctx, updateSQL, costUSD, subscriptionID, untaggedCostUSD)
 	if err != nil {
 		return err
 	}

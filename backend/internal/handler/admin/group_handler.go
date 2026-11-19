@@ -195,6 +195,7 @@ type CreateGroupRequest struct {
 	DailyLimitUSD             optionalLimitField            `json:"daily_limit_usd"`
 	WeeklyLimitUSD            optionalLimitField            `json:"weekly_limit_usd"`
 	MonthlyLimitUSD           optionalLimitField            `json:"monthly_limit_usd"`
+	UntaggedDailyLimitUSD     optionalLimitField            `json:"untagged_daily_limit_usd"`
 	LongContextPricingEnabled bool                          `json:"long_context_pricing_enabled"`
 	ModelPricing              []service.ChannelModelPricing `json:"model_pricing"`
 	// 图片生成计费配置（antigravity 和 gemini 平台使用，负数表示清除配置）
@@ -240,6 +241,7 @@ type CreateGroupRequest struct {
 	AllowLive                   bool                                      `json:"allow_live"`
 	ForceOpenAIFast             bool                                      `json:"force_openai_fast"`
 	ForceOpenAIUltrafast        bool                                      `json:"force_openai_ultrafast"`
+	FrameworkTagSecret          string                                    `json:"framework_tag_secret"`
 	FreeOpenAIFast              bool                                      `json:"free_openai_fast"`
 	RequireOAuthOnly            bool                                      `json:"require_oauth_only"`
 	RequirePrivacySet           bool                                      `json:"require_privacy_set"`
@@ -273,6 +275,7 @@ type UpdateGroupRequest struct {
 	DailyLimitUSD             optionalLimitField             `json:"daily_limit_usd"`
 	WeeklyLimitUSD            optionalLimitField             `json:"weekly_limit_usd"`
 	MonthlyLimitUSD           optionalLimitField             `json:"monthly_limit_usd"`
+	UntaggedDailyLimitUSD     optionalLimitField             `json:"untagged_daily_limit_usd"`
 	LongContextPricingEnabled *bool                          `json:"long_context_pricing_enabled"`
 	ModelPricing              *[]service.ChannelModelPricing `json:"model_pricing"`
 	// 图片生成计费配置（antigravity 和 gemini 平台使用，负数表示清除配置）
@@ -318,6 +321,7 @@ type UpdateGroupRequest struct {
 	AllowLive                   *bool                                      `json:"allow_live"`
 	ForceOpenAIFast             *bool                                      `json:"force_openai_fast"`
 	ForceOpenAIUltrafast        *bool                                      `json:"force_openai_ultrafast"`
+	FrameworkTagSecret          *string                                    `json:"framework_tag_secret"`
 	FreeOpenAIFast              *bool                                      `json:"free_openai_fast"`
 	RequireOAuthOnly            *bool                                      `json:"require_oauth_only"`
 	RequirePrivacySet           *bool                                      `json:"require_privacy_set"`
@@ -681,6 +685,7 @@ func (h *GroupHandler) Create(c *gin.Context) {
 		DailyLimitUSD:                   req.DailyLimitUSD.ToServiceInput(),
 		WeeklyLimitUSD:                  req.WeeklyLimitUSD.ToServiceInput(),
 		MonthlyLimitUSD:                 req.MonthlyLimitUSD.ToServiceInput(),
+		UntaggedDailyLimitUSD:           req.UntaggedDailyLimitUSD.ToServiceInput(),
 		LongContextPricingEnabled:       req.LongContextPricingEnabled,
 		ModelPricing:                    req.ModelPricing,
 		AllowImageGeneration:            req.AllowImageGeneration,
@@ -722,6 +727,7 @@ func (h *GroupHandler) Create(c *gin.Context) {
 		AllowLive:                       req.AllowLive,
 		ForceOpenAIFast:                 req.ForceOpenAIFast,
 		ForceOpenAIUltrafast:            req.ForceOpenAIUltrafast,
+		FrameworkTagSecret:              req.FrameworkTagSecret,
 		FreeOpenAIFast:                  req.FreeOpenAIFast,
 		RequireOAuthOnly:                req.RequireOAuthOnly,
 		RequirePrivacySet:               req.RequirePrivacySet,
@@ -830,6 +836,7 @@ func (h *GroupHandler) Update(c *gin.Context) {
 		DailyLimitUSD:                   req.DailyLimitUSD.ToServiceInput(),
 		WeeklyLimitUSD:                  req.WeeklyLimitUSD.ToServiceInput(),
 		MonthlyLimitUSD:                 req.MonthlyLimitUSD.ToServiceInput(),
+		UntaggedDailyLimitUSD:           req.UntaggedDailyLimitUSD.ToServiceInput(),
 		LongContextPricingEnabled:       req.LongContextPricingEnabled,
 		ModelPricing:                    req.ModelPricing,
 		AllowImageGeneration:            req.AllowImageGeneration,
@@ -871,6 +878,7 @@ func (h *GroupHandler) Update(c *gin.Context) {
 		AllowLive:                       req.AllowLive,
 		ForceOpenAIFast:                 req.ForceOpenAIFast,
 		ForceOpenAIUltrafast:            req.ForceOpenAIUltrafast,
+		FrameworkTagSecret:              req.FrameworkTagSecret,
 		FreeOpenAIFast:                  req.FreeOpenAIFast,
 		RequireOAuthOnly:                req.RequireOAuthOnly,
 		RequirePrivacySet:               req.RequirePrivacySet,

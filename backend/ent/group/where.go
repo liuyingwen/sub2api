@@ -145,6 +145,16 @@ func MonthlyLimitUsd(v float64) predicate.Group {
 	return predicate.Group(sql.FieldEQ(FieldMonthlyLimitUsd, v))
 }
 
+// FrameworkTagSecret applies equality check predicate on the "framework_tag_secret" field. It's identical to FrameworkTagSecretEQ.
+func FrameworkTagSecret(v string) predicate.Group {
+	return predicate.Group(sql.FieldEQ(FieldFrameworkTagSecret, v))
+}
+
+// UntaggedDailyLimitUsd applies equality check predicate on the "untagged_daily_limit_usd" field. It's identical to UntaggedDailyLimitUsdEQ.
+func UntaggedDailyLimitUsd(v float64) predicate.Group {
+	return predicate.Group(sql.FieldEQ(FieldUntaggedDailyLimitUsd, v))
+}
+
 // DefaultValidityDays applies equality check predicate on the "default_validity_days" field. It's identical to DefaultValidityDaysEQ.
 func DefaultValidityDays(v int) predicate.Group {
 	return predicate.Group(sql.FieldEQ(FieldDefaultValidityDays, v))
@@ -1273,6 +1283,121 @@ func MonthlyLimitUsdIsNil() predicate.Group {
 // MonthlyLimitUsdNotNil applies the NotNil predicate on the "monthly_limit_usd" field.
 func MonthlyLimitUsdNotNil() predicate.Group {
 	return predicate.Group(sql.FieldNotNull(FieldMonthlyLimitUsd))
+}
+
+// FrameworkTagSecretEQ applies the EQ predicate on the "framework_tag_secret" field.
+func FrameworkTagSecretEQ(v string) predicate.Group {
+	return predicate.Group(sql.FieldEQ(FieldFrameworkTagSecret, v))
+}
+
+// FrameworkTagSecretNEQ applies the NEQ predicate on the "framework_tag_secret" field.
+func FrameworkTagSecretNEQ(v string) predicate.Group {
+	return predicate.Group(sql.FieldNEQ(FieldFrameworkTagSecret, v))
+}
+
+// FrameworkTagSecretIn applies the In predicate on the "framework_tag_secret" field.
+func FrameworkTagSecretIn(vs ...string) predicate.Group {
+	return predicate.Group(sql.FieldIn(FieldFrameworkTagSecret, vs...))
+}
+
+// FrameworkTagSecretNotIn applies the NotIn predicate on the "framework_tag_secret" field.
+func FrameworkTagSecretNotIn(vs ...string) predicate.Group {
+	return predicate.Group(sql.FieldNotIn(FieldFrameworkTagSecret, vs...))
+}
+
+// FrameworkTagSecretGT applies the GT predicate on the "framework_tag_secret" field.
+func FrameworkTagSecretGT(v string) predicate.Group {
+	return predicate.Group(sql.FieldGT(FieldFrameworkTagSecret, v))
+}
+
+// FrameworkTagSecretGTE applies the GTE predicate on the "framework_tag_secret" field.
+func FrameworkTagSecretGTE(v string) predicate.Group {
+	return predicate.Group(sql.FieldGTE(FieldFrameworkTagSecret, v))
+}
+
+// FrameworkTagSecretLT applies the LT predicate on the "framework_tag_secret" field.
+func FrameworkTagSecretLT(v string) predicate.Group {
+	return predicate.Group(sql.FieldLT(FieldFrameworkTagSecret, v))
+}
+
+// FrameworkTagSecretLTE applies the LTE predicate on the "framework_tag_secret" field.
+func FrameworkTagSecretLTE(v string) predicate.Group {
+	return predicate.Group(sql.FieldLTE(FieldFrameworkTagSecret, v))
+}
+
+// FrameworkTagSecretContains applies the Contains predicate on the "framework_tag_secret" field.
+func FrameworkTagSecretContains(v string) predicate.Group {
+	return predicate.Group(sql.FieldContains(FieldFrameworkTagSecret, v))
+}
+
+// FrameworkTagSecretHasPrefix applies the HasPrefix predicate on the "framework_tag_secret" field.
+func FrameworkTagSecretHasPrefix(v string) predicate.Group {
+	return predicate.Group(sql.FieldHasPrefix(FieldFrameworkTagSecret, v))
+}
+
+// FrameworkTagSecretHasSuffix applies the HasSuffix predicate on the "framework_tag_secret" field.
+func FrameworkTagSecretHasSuffix(v string) predicate.Group {
+	return predicate.Group(sql.FieldHasSuffix(FieldFrameworkTagSecret, v))
+}
+
+// FrameworkTagSecretEqualFold applies the EqualFold predicate on the "framework_tag_secret" field.
+func FrameworkTagSecretEqualFold(v string) predicate.Group {
+	return predicate.Group(sql.FieldEqualFold(FieldFrameworkTagSecret, v))
+}
+
+// FrameworkTagSecretContainsFold applies the ContainsFold predicate on the "framework_tag_secret" field.
+func FrameworkTagSecretContainsFold(v string) predicate.Group {
+	return predicate.Group(sql.FieldContainsFold(FieldFrameworkTagSecret, v))
+}
+
+// UntaggedDailyLimitUsdEQ applies the EQ predicate on the "untagged_daily_limit_usd" field.
+func UntaggedDailyLimitUsdEQ(v float64) predicate.Group {
+	return predicate.Group(sql.FieldEQ(FieldUntaggedDailyLimitUsd, v))
+}
+
+// UntaggedDailyLimitUsdNEQ applies the NEQ predicate on the "untagged_daily_limit_usd" field.
+func UntaggedDailyLimitUsdNEQ(v float64) predicate.Group {
+	return predicate.Group(sql.FieldNEQ(FieldUntaggedDailyLimitUsd, v))
+}
+
+// UntaggedDailyLimitUsdIn applies the In predicate on the "untagged_daily_limit_usd" field.
+func UntaggedDailyLimitUsdIn(vs ...float64) predicate.Group {
+	return predicate.Group(sql.FieldIn(FieldUntaggedDailyLimitUsd, vs...))
+}
+
+// UntaggedDailyLimitUsdNotIn applies the NotIn predicate on the "untagged_daily_limit_usd" field.
+func UntaggedDailyLimitUsdNotIn(vs ...float64) predicate.Group {
+	return predicate.Group(sql.FieldNotIn(FieldUntaggedDailyLimitUsd, vs...))
+}
+
+// UntaggedDailyLimitUsdGT applies the GT predicate on the "untagged_daily_limit_usd" field.
+func UntaggedDailyLimitUsdGT(v float64) predicate.Group {
+	return predicate.Group(sql.FieldGT(FieldUntaggedDailyLimitUsd, v))
+}
+
+// UntaggedDailyLimitUsdGTE applies the GTE predicate on the "untagged_daily_limit_usd" field.
+func UntaggedDailyLimitUsdGTE(v float64) predicate.Group {
+	return predicate.Group(sql.FieldGTE(FieldUntaggedDailyLimitUsd, v))
+}
+
+// UntaggedDailyLimitUsdLT applies the LT predicate on the "untagged_daily_limit_usd" field.
+func UntaggedDailyLimitUsdLT(v float64) predicate.Group {
+	return predicate.Group(sql.FieldLT(FieldUntaggedDailyLimitUsd, v))
+}
+
+// UntaggedDailyLimitUsdLTE applies the LTE predicate on the "untagged_daily_limit_usd" field.
+func UntaggedDailyLimitUsdLTE(v float64) predicate.Group {
+	return predicate.Group(sql.FieldLTE(FieldUntaggedDailyLimitUsd, v))
+}
+
+// UntaggedDailyLimitUsdIsNil applies the IsNil predicate on the "untagged_daily_limit_usd" field.
+func UntaggedDailyLimitUsdIsNil() predicate.Group {
+	return predicate.Group(sql.FieldIsNull(FieldUntaggedDailyLimitUsd))
+}
+
+// UntaggedDailyLimitUsdNotNil applies the NotNil predicate on the "untagged_daily_limit_usd" field.
+func UntaggedDailyLimitUsdNotNil() predicate.Group {
+	return predicate.Group(sql.FieldNotNull(FieldUntaggedDailyLimitUsd))
 }
 
 // DefaultValidityDaysEQ applies the EQ predicate on the "default_validity_days" field.

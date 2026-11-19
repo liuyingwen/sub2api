@@ -35,11 +35,13 @@ type Group struct {
 	// an already committed one-click copy. It must never be mapped to API DTOs.
 	DuplicateOperationID string
 
-	SubscriptionType    string
-	DailyLimitUSD       *float64
-	WeeklyLimitUSD      *float64
-	MonthlyLimitUSD     *float64
-	DefaultValidityDays int
+	SubscriptionType string
+	DailyLimitUSD    *float64
+	WeeklyLimitUSD   *float64
+	MonthlyLimitUSD  *float64
+	// UntaggedDailyLimitUSD 未携带框架标识请求的每日上限；nil 表示不单独限制，0 表示必须带标识。
+	UntaggedDailyLimitUSD *float64
+	DefaultValidityDays   int
 
 	// 图片生成计费配置（antigravity 和 gemini 平台使用）
 	AllowImageGeneration         bool
@@ -102,11 +104,12 @@ type Group struct {
 	// OpenAI Messages 调度配置（仅 openai 平台使用）
 	AllowMessagesDispatch       bool
 	AllowLive                   bool
-	ForceOpenAIFast             bool // 强制 OpenAI 网关请求使用 service_tier=priority
-	ForceOpenAIUltrafast        bool // 对支持 Ultrafast 的模型强制 service_tier=ultrafast，优先于 ForceOpenAIFast
-	FreeOpenAIFast              bool // OpenAI Fast 请求按 Standard 价格向用户计费
-	RequireOAuthOnly            bool // 仅允许非 apikey 类型账号关联（OpenAI/Antigravity/Anthropic/Gemini）
-	RequirePrivacySet           bool // 调度时仅允许 privacy 已成功设置的账号（OpenAI/Antigravity/Anthropic/Gemini）
+	ForceOpenAIFast             bool   // 强制 OpenAI 网关请求使用 service_tier=priority
+	ForceOpenAIUltrafast        bool   // 对支持 Ultrafast 的模型强制 service_tier=ultrafast，优先于 ForceOpenAIFast
+	FrameworkTagSecret          string // 框架令牌签名密钥（仅服务端/管理端可见）；空表示该分组不识别框架标识
+	FreeOpenAIFast              bool   // OpenAI Fast 请求按 Standard 价格向用户计费
+	RequireOAuthOnly            bool   // 仅允许非 apikey 类型账号关联（OpenAI/Antigravity/Anthropic/Gemini）
+	RequirePrivacySet           bool   // 调度时仅允许 privacy 已成功设置的账号（OpenAI/Antigravity/Anthropic/Gemini）
 	DefaultMappedModel          string
 	MessagesDispatchModelConfig OpenAIMessagesDispatchModelConfig
 	ModelAllowlist              GroupModelAllowlist
@@ -160,6 +163,12 @@ func (g *Group) IsSubscriptionType() bool {
 
 func (g *Group) HasDailyLimit() bool {
 	return g.DailyLimitUSD != nil && *g.DailyLimitUSD > 0
+}
+
+// HasUntaggedDailyLimit 报告分组是否为无框架标识的请求单独设置了每日上限。
+func (g *Group) HasUntaggedDailyLimit() bool {
+	// 0 表示「不带标识的请求一律不允许」，与其它限额字段的 0 语义一致；负数在写入时已归一为 nil。
+	return g.UntaggedDailyLimitUSD != nil && *g.UntaggedDailyLimitUSD >= 0
 }
 
 func (g *Group) HasWeeklyLimit() bool {

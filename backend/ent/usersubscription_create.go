@@ -189,6 +189,20 @@ func (_c *UserSubscriptionCreate) SetNillableMonthlyUsageUsd(v *float64) *UserSu
 	return _c
 }
 
+// SetDailyUntaggedUsageUsd sets the "daily_untagged_usage_usd" field.
+func (_c *UserSubscriptionCreate) SetDailyUntaggedUsageUsd(v float64) *UserSubscriptionCreate {
+	_c.mutation.SetDailyUntaggedUsageUsd(v)
+	return _c
+}
+
+// SetNillableDailyUntaggedUsageUsd sets the "daily_untagged_usage_usd" field if the given value is not nil.
+func (_c *UserSubscriptionCreate) SetNillableDailyUntaggedUsageUsd(v *float64) *UserSubscriptionCreate {
+	if v != nil {
+		_c.SetDailyUntaggedUsageUsd(*v)
+	}
+	return _c
+}
+
 // SetAssignedBy sets the "assigned_by" field.
 func (_c *UserSubscriptionCreate) SetAssignedBy(v int64) *UserSubscriptionCreate {
 	_c.mutation.SetAssignedBy(v)
@@ -342,6 +356,10 @@ func (_c *UserSubscriptionCreate) defaults() error {
 		v := usersubscription.DefaultMonthlyUsageUsd
 		_c.mutation.SetMonthlyUsageUsd(v)
 	}
+	if _, ok := _c.mutation.DailyUntaggedUsageUsd(); !ok {
+		v := usersubscription.DefaultDailyUntaggedUsageUsd
+		_c.mutation.SetDailyUntaggedUsageUsd(v)
+	}
 	if _, ok := _c.mutation.AssignedAt(); !ok {
 		if usersubscription.DefaultAssignedAt == nil {
 			return fmt.Errorf("ent: uninitialized usersubscription.DefaultAssignedAt (forgotten import ent/runtime?)")
@@ -388,6 +406,9 @@ func (_c *UserSubscriptionCreate) check() error {
 	}
 	if _, ok := _c.mutation.MonthlyUsageUsd(); !ok {
 		return &ValidationError{Name: "monthly_usage_usd", err: errors.New(`ent: missing required field "UserSubscription.monthly_usage_usd"`)}
+	}
+	if _, ok := _c.mutation.DailyUntaggedUsageUsd(); !ok {
+		return &ValidationError{Name: "daily_untagged_usage_usd", err: errors.New(`ent: missing required field "UserSubscription.daily_untagged_usage_usd"`)}
 	}
 	if _, ok := _c.mutation.AssignedAt(); !ok {
 		return &ValidationError{Name: "assigned_at", err: errors.New(`ent: missing required field "UserSubscription.assigned_at"`)}
@@ -472,6 +493,10 @@ func (_c *UserSubscriptionCreate) createSpec() (*UserSubscription, *sqlgraph.Cre
 	if value, ok := _c.mutation.MonthlyUsageUsd(); ok {
 		_spec.SetField(usersubscription.FieldMonthlyUsageUsd, field.TypeFloat64, value)
 		_node.MonthlyUsageUsd = value
+	}
+	if value, ok := _c.mutation.DailyUntaggedUsageUsd(); ok {
+		_spec.SetField(usersubscription.FieldDailyUntaggedUsageUsd, field.TypeFloat64, value)
+		_node.DailyUntaggedUsageUsd = value
 	}
 	if value, ok := _c.mutation.AssignedAt(); ok {
 		_spec.SetField(usersubscription.FieldAssignedAt, field.TypeTime, value)
@@ -798,6 +823,24 @@ func (u *UserSubscriptionUpsert) AddMonthlyUsageUsd(v float64) *UserSubscription
 	return u
 }
 
+// SetDailyUntaggedUsageUsd sets the "daily_untagged_usage_usd" field.
+func (u *UserSubscriptionUpsert) SetDailyUntaggedUsageUsd(v float64) *UserSubscriptionUpsert {
+	u.Set(usersubscription.FieldDailyUntaggedUsageUsd, v)
+	return u
+}
+
+// UpdateDailyUntaggedUsageUsd sets the "daily_untagged_usage_usd" field to the value that was provided on create.
+func (u *UserSubscriptionUpsert) UpdateDailyUntaggedUsageUsd() *UserSubscriptionUpsert {
+	u.SetExcluded(usersubscription.FieldDailyUntaggedUsageUsd)
+	return u
+}
+
+// AddDailyUntaggedUsageUsd adds v to the "daily_untagged_usage_usd" field.
+func (u *UserSubscriptionUpsert) AddDailyUntaggedUsageUsd(v float64) *UserSubscriptionUpsert {
+	u.Add(usersubscription.FieldDailyUntaggedUsageUsd, v)
+	return u
+}
+
 // SetAssignedBy sets the "assigned_by" field.
 func (u *UserSubscriptionUpsert) SetAssignedBy(v int64) *UserSubscriptionUpsert {
 	u.Set(usersubscription.FieldAssignedBy, v)
@@ -1119,6 +1162,27 @@ func (u *UserSubscriptionUpsertOne) AddMonthlyUsageUsd(v float64) *UserSubscript
 func (u *UserSubscriptionUpsertOne) UpdateMonthlyUsageUsd() *UserSubscriptionUpsertOne {
 	return u.Update(func(s *UserSubscriptionUpsert) {
 		s.UpdateMonthlyUsageUsd()
+	})
+}
+
+// SetDailyUntaggedUsageUsd sets the "daily_untagged_usage_usd" field.
+func (u *UserSubscriptionUpsertOne) SetDailyUntaggedUsageUsd(v float64) *UserSubscriptionUpsertOne {
+	return u.Update(func(s *UserSubscriptionUpsert) {
+		s.SetDailyUntaggedUsageUsd(v)
+	})
+}
+
+// AddDailyUntaggedUsageUsd adds v to the "daily_untagged_usage_usd" field.
+func (u *UserSubscriptionUpsertOne) AddDailyUntaggedUsageUsd(v float64) *UserSubscriptionUpsertOne {
+	return u.Update(func(s *UserSubscriptionUpsert) {
+		s.AddDailyUntaggedUsageUsd(v)
+	})
+}
+
+// UpdateDailyUntaggedUsageUsd sets the "daily_untagged_usage_usd" field to the value that was provided on create.
+func (u *UserSubscriptionUpsertOne) UpdateDailyUntaggedUsageUsd() *UserSubscriptionUpsertOne {
+	return u.Update(func(s *UserSubscriptionUpsert) {
+		s.UpdateDailyUntaggedUsageUsd()
 	})
 }
 
@@ -1617,6 +1681,27 @@ func (u *UserSubscriptionUpsertBulk) AddMonthlyUsageUsd(v float64) *UserSubscrip
 func (u *UserSubscriptionUpsertBulk) UpdateMonthlyUsageUsd() *UserSubscriptionUpsertBulk {
 	return u.Update(func(s *UserSubscriptionUpsert) {
 		s.UpdateMonthlyUsageUsd()
+	})
+}
+
+// SetDailyUntaggedUsageUsd sets the "daily_untagged_usage_usd" field.
+func (u *UserSubscriptionUpsertBulk) SetDailyUntaggedUsageUsd(v float64) *UserSubscriptionUpsertBulk {
+	return u.Update(func(s *UserSubscriptionUpsert) {
+		s.SetDailyUntaggedUsageUsd(v)
+	})
+}
+
+// AddDailyUntaggedUsageUsd adds v to the "daily_untagged_usage_usd" field.
+func (u *UserSubscriptionUpsertBulk) AddDailyUntaggedUsageUsd(v float64) *UserSubscriptionUpsertBulk {
+	return u.Update(func(s *UserSubscriptionUpsert) {
+		s.AddDailyUntaggedUsageUsd(v)
+	})
+}
+
+// UpdateDailyUntaggedUsageUsd sets the "daily_untagged_usage_usd" field to the value that was provided on create.
+func (u *UserSubscriptionUpsertBulk) UpdateDailyUntaggedUsageUsd() *UserSubscriptionUpsertBulk {
+	return u.Update(func(s *UserSubscriptionUpsert) {
+		s.UpdateDailyUntaggedUsageUsd()
 	})
 }
 
